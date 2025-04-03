@@ -1,24 +1,57 @@
-// #include "entities/Sprite.cpp"
+#include "entities/Sprite.h"
+#include "Animation.h"
 
-class AnimationObject {
-    AnimationObject(int positionX, int positionY, int width, int height) {
+void Animation::addAnimationObject(AnimationObject object)
+{
+    animation.push_back(object);
+}
 
+void Animation::setSprite(Sprite *_sprite)
+{
+    sprite = _sprite;
+}
+
+void  Animation::setAnimationInterval(int milisec)
+{
+    interval = milisec;
+}
+
+void Animation::play()
+{
+    if (isPlaying)
+    {
+        return;
     }
-
-    const int positionX = 0;
-    const int positionY = 0;
-    const int width = 0;
-    const int height = 0;
+    isPlaying = true;
+    time = interval;
 };
 
-class Animation {
-    public:
-        Animation() {};
-        void update() {};
-
-    private: 
-        std::vector<AnimationObject> animation;
-        int interval  = 100;
-        int time = 0;
-        bool isPlaying = false; 
+void Animation::stop()
+{
+    isPlaying = false;
 };
+
+void Animation::reset()
+{
+    stop();
+    currentObject = 0;
+    time = 0;
+};
+
+void Animation::update(const int delta)
+{
+    if (!isPlaying || !sprite)
+    {
+        return;
+    }
+    time -= delta;
+    if (time <= 0)
+    {
+        time = interval;
+        AnimationObject obj = animation[currentObject];
+        sprite->setClip(obj.width, obj.height, obj.positionX, obj.positionY);
+        // currentObject++;
+        currentObject = (currentObject + 1) % animation.size(); // go to the next frame of the sprites
+    }
+};
+

@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>
-#include "Object.cpp"
+#include "Object.h"
 #include "Animation.h"
 
 // Forward declare Animation class

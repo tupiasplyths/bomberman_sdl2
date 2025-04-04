@@ -51,7 +51,7 @@ void Animation::update(const int delta)
         AnimationObject obj = animation[currentObject];
         sprite->setClip(obj.width, obj.height, obj.positionX, obj.positionY);
         // currentObject++;
-        currentObject = (currentObject + 1) % animation.size(); // go to the next frame of the sprites
+        currentObject = (currentObject + 1) % (int)animation.size(); // go to the next frame of the sprites
     }
 };
 

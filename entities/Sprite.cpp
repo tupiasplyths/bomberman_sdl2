@@ -5,9 +5,9 @@
 // #include "Animation.h"
 #include "entities/Sprite.h"
 
-Sprite::Sprite(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : Object(renderer)
+Sprite::Sprite(std::shared_ptr<SDL_Texture> _texture, SDL_Renderer* _renderer) : Object(_renderer)
     {
-        this->texture = texture;
+        this->texture = _texture;
         int width, height;
         SDL_QueryTexture(this->texture.get(), NULL, NULL, &width, &height);
         clip.x = 0;

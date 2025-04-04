@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include <algorithm>
-#include "scene.h"
+#include "Scene.h"
 
 Scene::Scene(App * _app)
 {
@@ -32,3 +32,7 @@ void Scene::draw()
         object->draw();
     }
 }
+
+void Scene::onEvent(const SDL_Event &event) {}
+
+void Scene::onActivate() {}

@@ -2,6 +2,9 @@
 #include <iostream>
 
 #include "app.hpp"
+#include "scenes/Scene.h"
+#include "scenes/MenuScene.cpp"
+
 
 const int WINDOW_HEIGHT = 720;
 const int WINDOW_WIDTH = 1280;
@@ -42,6 +45,29 @@ App::~App()
     SDL_Quit();
 }
 
+void App::addScene(std::string name, std::shared_ptr<Scene> scene)
+{
+    const auto find_scene = scenes_list.find(name);
+    if (find_scene != scenes_list.end() && find_scene->second) 
+    {
+        std::cout << "Scene already exists" << std::endl;
+        return;
+    }
+    scenes_list[name] = scene;
+}
+
+void App::activateScene(const std::string name)
+{
+    const auto find_scene = scenes_list.find(name);
+    if (find_scene == scenes_list.end() || !find_scene->second)
+    {
+        std::cout << "Scene not found" << std::endl;
+        return;
+    }
+    current_scene = find_scene->second;
+    current_scene->onActivate();
+}
+
 void App::run()
 {
     if (running) 
@@ -50,8 +76,10 @@ void App::run()
     }
     running = true;
 
+    addScene("menu", std::make_shared<MenuScene>(this));
+    activateScene("menu");
     SDL_Event event;
-    while (true)
+    while (running)
     {
         while (SDL_PollEvent(&event))
         {
@@ -59,10 +87,8 @@ void App::run()
             switch (event.type)
             {
             case SDL_QUIT:
-                return;
+                stop();
                 break;
-
-            case 
             }
         }
         // update(FRAME_RATE);
@@ -70,10 +96,8 @@ void App::run()
     }
 }
 
-void App::update(double frame_rate)
+void App::stop()
 {
+    running = false;
 }
 
-void App::draw()
-{
-}

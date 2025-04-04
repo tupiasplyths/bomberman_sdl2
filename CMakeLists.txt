@@ -21,14 +21,13 @@ set (
     SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/game.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/app.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/scene.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Animation.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Creature.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Enemy.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Object.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Sprite.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/scenes/scene.cpp
-
+    ${CMAKE_CURRENT_SOURCE_DIR}/scenes/Scene.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scenes/MenuScene.cpp
 )
 
 add_executable(bomberman ${SOURCES})

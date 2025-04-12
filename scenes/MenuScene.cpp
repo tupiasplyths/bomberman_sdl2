@@ -26,7 +26,9 @@ void MenuScene::onEvent(const SDL_Event &event)
     {
         switch (event.key.keysym.scancode)
         {
+        case SDL_SCANCODE_DOWN:
         case SDL_SCANCODE_S:
+            std::cout << "Down" << std::endl;
             if (startItemSelected)
             {
                 startText->setColor(default_color);
@@ -42,6 +44,8 @@ void MenuScene::onEvent(const SDL_Event &event)
             break;
 
         case SDL_SCANCODE_W:
+        case SDL_SCANCODE_UP:
+            std::cout << "Up" << std::endl;
             if (startItemSelected)
             {
                 startText->setColor(selected);

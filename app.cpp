@@ -25,7 +25,7 @@ App::App()
         return;
     }
 
-    main_window = SDL_CreateWindow("App", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 1);
+    main_window = SDL_CreateWindow("App", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, window_height, 1);
     if (!main_window)
     {
         std::cout << "Failed to create window" << std::endl;
@@ -57,7 +57,9 @@ App::~App()
     // SDL_FreeSurface(main_surface);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(main_window);
+    delete texture;
     
+    TTF_Quit();
     SDL_Quit();
 }
 
@@ -93,6 +95,8 @@ void App::run()
     running = true;
     texture->load(renderer);
 
+    std::cout << "textures loaded" << std::endl;
+
     addScene("menu", std::make_shared<MenuScene>(this));
     activateScene("menu");
     SDL_Event event;
@@ -100,17 +104,34 @@ void App::run()
     {
         while (SDL_PollEvent(&event))
         {
-
+            current_scene->onEvent(event);
+            std::cout << "An event fired" << std::endl;
             switch (event.type)
             {
-            case SDL_QUIT:
-                stop();
-                break;
+                case SDL_QUIT:
+                    stop();
+                    break;
             }
         }
-        // update(FRAME_RATE);
-        // draw();
+        Uint32 tickTime = SDL_GetTicks();
+        int delta = (int)tickTime - last_tick;
+        last_tick = tickTime;
+        update(delta);
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+        draw();
+        SDL_RenderPresent(renderer);
+
     }
+}
+
+void App::update(const int delta) 
+{
+    current_scene->update(delta);
+}
+
+void App::draw()
+{
+    current_scene->draw();
 }
 
 void App::stop()

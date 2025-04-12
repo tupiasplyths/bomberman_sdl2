@@ -19,6 +19,8 @@ public:
     int getWindowWidth();
     int getWindowHeight();
     Texture *getTextures() const;
+    void update(const int delta);
+    void draw();
     
 private:
     SDL_Window *main_window;
@@ -31,6 +33,7 @@ private:
     Texture *texture;
     std::unordered_map<std::string, std::shared_ptr<Scene>> scenes_list;
     std::shared_ptr<Scene> current_scene = nullptr;
+    int last_tick = 0;
 };
 
 #endif // APP_H

@@ -14,7 +14,7 @@ void Texture::load(SDL_Renderer *renderer)
 
 void Texture::loadFont()
 {
-    font = std::shared_ptr<TTF_Font>(TTF_OpenFont("assets/font.ttf", 32), TTF_CloseFont);
+    font = std::shared_ptr<TTF_Font>(TTF_OpenFont("assets/font.ttf", 26), TTF_CloseFont);
     if (!font)
     {
         std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;

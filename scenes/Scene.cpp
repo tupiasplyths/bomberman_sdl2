@@ -33,9 +33,12 @@ void Scene::draw()
     }
 }
 
-void Scene::onEvent(const SDL_Event &event) {}
+void Scene::onEvent(const SDL_Event & /*event*/)
+{
+
+}
 
 void Scene::onActivate() 
 {
-    
+
 }

@@ -105,7 +105,7 @@ void App::run()
         while (SDL_PollEvent(&event))
         {
             current_scene->onEvent(event);
-            std::cout << "An event fired" << std::endl;
+            if (event.type == SDL_KEYDOWN) std::cout << "Some key is pressed" << std::endl;
             switch (event.type)
             {
                 case SDL_QUIT:
@@ -118,6 +118,7 @@ void App::run()
         last_tick = tickTime;
         update(delta);
         SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+        SDL_RenderClear(renderer);
         draw();
         SDL_RenderPresent(renderer);
 

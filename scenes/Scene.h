@@ -18,7 +18,7 @@ class Scene
         void addObject(std::shared_ptr<Object> object);
         void removeObject(std::shared_ptr<Object> object);
         void draw();
-        void onEvent(const SDL_Event &event);
+        virtual void onEvent(const SDL_Event &event);
         void onActivate();
         void update(const int delta);
 };

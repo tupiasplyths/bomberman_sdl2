@@ -26,7 +26,7 @@ private:
     std::shared_ptr<TTF_Font> font = nullptr;
     std::unordered_map<texture_name, std::shared_ptr<SDL_Texture>> textures;
     void loadFont();
-    void loadTexture(SDL_Renderer *renderer, texture_name name, const std::string filename);
+    void loadTexture(SDL_Renderer *renderer, texture_name name, const char *filename);
 };
 
 #endif // TEXTURES_H

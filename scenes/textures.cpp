@@ -1,5 +1,5 @@
-#include "scenes/textures.h"
 #include <iostream>
+#include "scenes/textures.h"
 
 void Texture::load(SDL_Renderer *renderer)
 {
@@ -21,9 +21,9 @@ void Texture::loadFont()
     }
 }
 
-void Texture::loadTexture(SDL_Renderer *renderer, texture_name name, const std::string filename)
+void Texture::loadTexture(SDL_Renderer *renderer, texture_name name, const char *filename)
 {
-    textures[name] = std::shared_ptr<SDL_Texture>(IMG_LoadTexture(renderer, filename.c_str()), SDL_DestroyTexture);
+    textures[name] = std::shared_ptr<SDL_Texture>(IMG_LoadTexture(renderer, filename), SDL_DestroyTexture);
     if (!textures[name])
     {
         std::cerr << "Failed to load texture: " << filename << " " << IMG_GetError() << std::endl;

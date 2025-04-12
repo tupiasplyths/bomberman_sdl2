@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 
 #include "app.h"
@@ -15,6 +16,12 @@ App::App()
     {
         std::cout << "Failed to initialize SDL" << std::endl;
         std::cout << SDL_GetError() << std::endl;
+        return;
+    }
+    if (TTF_Init() < 0)
+    {
+        std::cout << "Failed to initialize SDL_ttf" << std::endl;
+        std::cout << TTF_GetError() << std::endl;
         return;
     }
 
@@ -34,13 +41,15 @@ App::App()
         return;
     }
 
-//     main_surface = SDL_GetWindowSurface(main_window);
-//     if (!main_surface)
-//     {
-//         std::cout << "Failed to get window surface" << std::endl;
-//         std::cout << SDL_GetError() << std::endl;
-//         return;
-//     }
+    texture = new Texture();
+
+    //     main_surface = SDL_GetWindowSurface(main_window);
+    //     if (!main_surface)
+    //     {
+    //         std::cout << "Failed to get window surface" << std::endl;
+    //         std::cout << SDL_GetError() << std::endl;
+    //         return;
+    //     }
 }
 
 App::~App()
@@ -48,6 +57,7 @@ App::~App()
     // SDL_FreeSurface(main_surface);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(main_window);
+    
     SDL_Quit();
 }
 

@@ -1,3 +1,6 @@
+#ifndef TEXTURE_H
+#define TEXTURE_H
+
 #include <SDL2/SDL.h>
 #include <vector>
 #include "entities/Object.h"
@@ -14,8 +17,10 @@ class Scene
         Scene(App *app);
         void addObject(std::shared_ptr<Object> object);
         void removeObject(std::shared_ptr<Object> object);
-        void update(const int delta);
         void draw();
         void onEvent(const SDL_Event &event);
         void onActivate();
+        void update(const int delta);
 };
+
+#endif // TEXTURE_H

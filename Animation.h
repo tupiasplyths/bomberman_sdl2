@@ -1,4 +1,6 @@
-#pragma once
+#ifndef ANIMATION_H
+#define ANIMATION_H
+
 #include <vector>
 
 class Sprite;
@@ -33,3 +35,5 @@ private:
     int currentObject = 0;
     Sprite *sprite = nullptr;
 };
+
+#endif // ANIMATION_H

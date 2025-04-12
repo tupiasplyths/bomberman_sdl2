@@ -1,9 +1,8 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
-#include "app.hpp"
-#include "scenes/Scene.h"
-#include "scenes/MenuScene.cpp"
+#include "app.h"
+#include "scenes/MenuScene.h"
 
 
 const int WINDOW_HEIGHT = 720;
@@ -12,6 +11,13 @@ const double FRAME_RATE = 1.0 / 60.0;
 
 App::App()
 {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        std::cout << "Failed to initialize SDL" << std::endl;
+        std::cout << SDL_GetError() << std::endl;
+        return;
+    }
+
     main_window = SDL_CreateWindow("App", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 1);
     if (!main_window)
     {
@@ -75,6 +81,7 @@ void App::run()
         return;
     }
     running = true;
+    texture->load(renderer);
 
     addScene("menu", std::make_shared<MenuScene>(this));
     activateScene("menu");
@@ -101,3 +108,22 @@ void App::stop()
     running = false;
 }
 
+SDL_Renderer *App::getRenderer() const
+{
+    return renderer;
+}
+
+int App::getWindowWidth()
+{
+    return window_width;
+}
+
+int App::getWindowHeight()
+{
+    return window_height;
+}
+
+Texture *App::getTextures() const
+{
+    return texture;
+}

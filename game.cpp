@@ -1,7 +1,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
-#include "app.hpp"
+#include "app.h"
 
 int main (int argc, char *argv[]) {
     App app;

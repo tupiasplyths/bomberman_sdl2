@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SPRITE_H
+#define SPRITE_H
+
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>
@@ -20,3 +22,5 @@ private:
     SDL_Rect clip;
     SDL_Rect rect;
 };
+
+#endif // SPRITE_H

@@ -37,7 +37,7 @@ set (
     ${CMAKE_CURRENT_SOURCE_DIR}/game.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/app.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Animation.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/entities/Creature.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/entities/MovingEntities.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Enemy.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Object.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Text.cpp

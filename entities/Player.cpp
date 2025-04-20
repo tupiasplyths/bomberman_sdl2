@@ -1,34 +1,98 @@
 #include "entities/Player.h"
+#include "entities/Sprite.h"
 
-Player::Player(SDL_Renderer *renderer, std::shared_ptr<SDL_Texture> texture) : MovingEntity(renderer, texture)
+Player::Player(SDL_Renderer *renderer, std::shared_ptr<SDL_Texture> texture) : MovingEntity(texture, renderer)
 {
-    animation = std::make_shared<Animation>();
-    // move up
-    animation->addAnimationObject(AnimationObject(0, 0, 32, 48));
-    animation->addAnimationObject(AnimationObject(32, 0, 32, 48));
-    animation->addAnimationObject(AnimationObject(64, 0, 32, 48));
-    animation->addAnimationObject(AnimationObject(96, 0, 32, 48));
-    // move down
-    animation->addAnimationObject(AnimationObject(0, 48, 32, 48));
-    animation->addAnimationObject(AnimationObject(32, 48, 32, 48));
-    animation->addAnimationObject(AnimationObject(64, 48, 32, 48));
-    animation->addAnimationObject(AnimationObject(96, 48, 32, 48));
-    // move left
-    animation->addAnimationObject(AnimationObject(0, 96, 32, 48));
-    animation->addAnimationObject(AnimationObject(32, 96, 32, 48));
-    animation->addAnimationObject(AnimationObject(64, 96, 32, 48));
-    animation->addAnimationObject(AnimationObject(96, 96, 32, 48));
-    // move right
-    animation->addAnimationObject(AnimationObject(0, 144, 32, 48));
-    animation->addAnimationObject(AnimationObject(32, 144, 32, 48));
-    animation->addAnimationObject(AnimationObject(64, 144, 32, 48));
-    animation->addAnimationObject(AnimationObject(96, 144, 32, 48));
-    // die
-    animation->addAnimationObject(AnimationObject(0, 192, 32, 48));
-    animation->addAnimationObject(AnimationObject(32, 192, 32, 48));
-    animation->addAnimationObject(AnimationObject(64, 192, 32, 48));
-    animation->addAnimationObject(AnimationObject(96, 192, 32, 48));
+    upAnimation = std::make_shared<Animation>();
+    downAnimation = std::make_shared<Animation>();
+    leftAnimation = std::make_shared<Animation>();
+    rightAnimation = std::make_shared<Animation>();
+    // deathAnimation = std::make_shared<Animation>();
+    // animation = std::shared_ptr<Animation>[5];
 
-    animation->setSprite(this);
-    addAnimation(animation);
+    // move up
+    upAnimation->addAnimationObject(AnimationObject(0, 0, 32, 48));
+    upAnimation->addAnimationObject(AnimationObject(32, 0, 32, 48));
+    upAnimation->addAnimationObject(AnimationObject(64, 0, 32, 48));
+    upAnimation->addAnimationObject(AnimationObject(96, 0, 32, 48));
+    // move down
+    downAnimation->addAnimationObject(AnimationObject(0, 48, 32, 48));
+    downAnimation->addAnimationObject(AnimationObject(32, 48, 32, 48));
+    downAnimation->addAnimationObject(AnimationObject(64, 48, 32, 48));
+    downAnimation->addAnimationObject(AnimationObject(96, 48, 32, 48));
+    // move left
+    leftAnimation->addAnimationObject(AnimationObject(0, 96, 32, 48));
+    leftAnimation->addAnimationObject(AnimationObject(32, 96, 32, 48));
+    leftAnimation->addAnimationObject(AnimationObject(64, 96, 32, 48));
+    leftAnimation->addAnimationObject(AnimationObject(96, 96, 32, 48));
+    // move right
+    rightAnimation->addAnimationObject(AnimationObject(0, 144, 32, 48));
+    rightAnimation->addAnimationObject(AnimationObject(32, 144, 32, 48));
+    rightAnimation->addAnimationObject(AnimationObject(64, 144, 32, 48));
+    rightAnimation->addAnimationObject(AnimationObject(96, 144, 32, 48));
+    // die
+    // deathAnimation->addAnimationObject(AnimationObject(0, 192, 32, 48));
+    // deathAnimation->addAnimationObject(AnimationObject(32, 192, 32, 48));
+    // deathAnimation->addAnimationObject(AnimationObject(64, 192, 32, 48));
+    // deathAnimation->addAnimationObject(AnimationObject(96, 192, 32, 48));
+
+    animation[directions::UP] = upAnimation;
+    animation[directions::DOWN] = downAnimation;
+    animation[directions::LEFT] = leftAnimation;
+    animation[directions::RIGHT] = rightAnimation;
+}
+
+void Player::setDirection(directions _direction)
+{
+    direction = _direction;
+    setMoving(true);
+    switch (_direction)
+    {
+    case directions::NONE:
+        animation[direction]->reset();
+        setMoving(false);
+        break;
+    default:
+        animation[direction]->play();
+        break;
+    }
+}
+
+bool Player::isMovingVertical()
+{
+    return direction == directions::UP || direction == directions::DOWN;
+}
+bool Player::isMovingHorizontal()
+{
+    return direction == directions::LEFT || direction == directions::RIGHT;
+}
+
+void Player::update(const int delta)
+{
+    if (isMoving())
+    {
+        const int moveDistance = speed * delta * getWidth();
+        if (isMovingVertical())
+        {
+            if (direction == directions::UP)
+            {
+                setPosition(getX(), getY() - moveDistance);
+            }
+            else
+            {
+                setPosition(getX(), getY() + moveDistance);
+            }
+        }
+        else
+        {
+            if (direction == directions::LEFT)
+            {
+                setPosition(getX() - moveDistance, getY());
+            }
+            else
+            {
+                setPosition(getX() + moveDistance, getY());
+            }
+        }
+    }
 }

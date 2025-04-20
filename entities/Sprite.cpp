@@ -26,3 +26,8 @@ void Sprite::update(const int delta)
             animation->update(delta);
         }
     }
+
+void Sprite::addAnimation(std::shared_ptr<Animation> animation)
+{
+    animations.push_back(animation);
+}

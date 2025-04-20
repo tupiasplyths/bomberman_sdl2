@@ -13,7 +13,7 @@ public:
         DOWN,
         LEFT,
         RIGHT,
-        NONE
+        NONE,
     };
     Player(SDL_Renderer *renderer, std::shared_ptr<SDL_Texture> texture);
     void setDirection(directions direction);
@@ -24,7 +24,12 @@ private:
     bool isMovingVertical();
     bool isMovingHorizontal();
     const float speed = 0.1f;
-    std::shared_ptr<Animation> animation;
+    std::shared_ptr<Animation> upAnimation;
+    std::shared_ptr<Animation> downAnimation;
+    std::shared_ptr<Animation> leftAnimation;
+    std::shared_ptr<Animation> rightAnimation;
+    std::shared_ptr<Animation> deathAnimation;
+    std::shared_ptr<Animation> animation[5];
 };
 
 

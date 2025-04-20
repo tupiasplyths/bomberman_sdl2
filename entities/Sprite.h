@@ -15,6 +15,7 @@ class Sprite : public Object
 public:
     Sprite(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer);
     virtual void update(const int delta) override;
+    void addAnimation(std::shared_ptr<Animation> animation);
 
 private:
     std::vector<std::shared_ptr<Animation>> animations;

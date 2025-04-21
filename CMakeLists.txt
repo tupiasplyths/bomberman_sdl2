@@ -45,6 +45,7 @@ set (
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/textures.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/Scene.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/MenuScene.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scenes/GameScene.cpp
 )
 
 add_executable(bomberman ${SOURCES})

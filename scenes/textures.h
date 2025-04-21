@@ -19,7 +19,7 @@ public:
         WALL,
     };
     void load(SDL_Renderer *renderer);
-    std::shared_ptr<SDL_Texture> getTexture;
+    std::shared_ptr<SDL_Texture> getTexture(Texture::texture_name name);
     std::shared_ptr<TTF_Font> getFont();
 
 private:

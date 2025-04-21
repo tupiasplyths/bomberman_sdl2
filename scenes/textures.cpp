@@ -34,3 +34,8 @@ std::shared_ptr<TTF_Font> Texture::getFont()
 {
     return font;
 }
+
+std::shared_ptr<SDL_Texture> Texture::getTexture(texture_name name)
+{
+    return textures[name];
+}

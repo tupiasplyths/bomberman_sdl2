@@ -4,6 +4,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "entities/Object.h"
 #include "scenes/textures.h"
+#include <string>
 
 class Text : public Object
 {

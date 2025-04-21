@@ -21,6 +21,7 @@ public:
 
 private:
     directions direction = directions::NONE;
+    directions lastDirection = directions::NONE;
     bool isMovingVertical();
     bool isMovingHorizontal();
     const float speed = 0.1f;
@@ -29,8 +30,7 @@ private:
     std::shared_ptr<Animation> leftAnimation;
     std::shared_ptr<Animation> rightAnimation;
     std::shared_ptr<Animation> deathAnimation;
-    std::shared_ptr<Animation> animation[5];
+    std::shared_ptr<Animation> animation[4];
 };
-
 
 #endif // _PLAYER_H_

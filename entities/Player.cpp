@@ -53,6 +53,11 @@ void Player::setDirection(directions _direction)
         setMoving(false);
         break;
     default:
+        if (direction != lastDirection)
+        {
+            animation[direction]->reset();
+            lastDirection = direction;
+        }
         animation[direction]->play();
         break;
     }

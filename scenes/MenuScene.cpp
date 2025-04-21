@@ -4,6 +4,7 @@
 #include "app.h"
 #include "scenes/Scene.h"
 #include "scenes/MenuScene.h"
+#include "scenes/GameScene.h"
 // #include "entities/Sprite.h"
 
 MenuScene::MenuScene(App *_app) : Scene(_app)
@@ -62,12 +63,13 @@ void MenuScene::onEvent(const SDL_Event &event)
         case SDL_SCANCODE_RETURN:
             if (startItemSelected)
             {
-                // app->addScene("game", std::make_shared<GameScene>(app));
-                // app->activateScene("game");
+                app->addScene("game", std::make_shared<GameScene>(app));
+                app->activateScene("game");
                 std::cout << "Starting game..." << std::endl;
             }
             else
             {
+                std::cout << "Exit game" << std::endl;
                 app->stop();
             }
             break;

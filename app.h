@@ -21,6 +21,7 @@ public:
     Texture *getTextures() const;
     void update(const int delta);
     void draw();
+    void removeScene(const std::string name);
     
 private:
     SDL_Window *main_window;

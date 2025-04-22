@@ -7,8 +7,6 @@
 #include "Object.h"
 #include "Animation.h"
 
-// Forward declare Animation class
-class Animation;
 
 class Sprite : public Object
 {

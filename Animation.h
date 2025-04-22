@@ -9,10 +9,10 @@ class AnimationObject
 {
 public:
     AnimationObject(int positionX, int positionY, int width, int height);
-    const int positionX;
-    const int positionY;
-    const int width;
-    const int height;
+    int positionX;
+    int positionY;
+    int width;
+    int height;
 };
 
 class Animation

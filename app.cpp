@@ -159,3 +159,14 @@ Texture *App::getTextures() const
 {
     return texture;
 }
+
+void App::removeScene(const std::string name)
+{
+    const auto find_scene = scenes_list.find(name);
+    if (find_scene == scenes_list.end() || !find_scene->second)
+    {
+        std::cout << "Scene not found" << std::endl;
+        return;
+    }
+    scenes_list.erase(find_scene);
+}

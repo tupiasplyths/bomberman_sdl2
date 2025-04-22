@@ -5,7 +5,8 @@
 #include <memory>
 #include <utility>
 #include <vector>
-#include "entities/Text.h"
+
+// #include "entities/Text.h"
 #include "scenes/Scene.h"
 #include "entities/Player.h"
 

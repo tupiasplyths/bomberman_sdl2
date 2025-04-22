@@ -42,6 +42,7 @@ set (
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Object.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Text.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Sprite.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/entities/Player.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/textures.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/Scene.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/MenuScene.cpp

@@ -1,6 +1,8 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
+#include <vector>
+#include <unordered_map>
 #include "Animation.h"
 #include "entities/MovingEntities.h"
 
@@ -15,7 +17,8 @@ public:
         RIGHT,
         NONE,
     };
-    Player(SDL_Renderer *renderer, std::shared_ptr<SDL_Texture> texture);
+    // Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer);
+    Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer);
     void setDirection(directions direction);
     virtual void update(const int delta) override;
 
@@ -30,7 +33,7 @@ private:
     std::shared_ptr<Animation> leftAnimation;
     std::shared_ptr<Animation> rightAnimation;
     std::shared_ptr<Animation> deathAnimation;
-    std::shared_ptr<Animation> animation[4];
+    std::unordered_map<directions, std::shared_ptr<Animation>> animation;
 };
 
 #endif // _PLAYER_H_

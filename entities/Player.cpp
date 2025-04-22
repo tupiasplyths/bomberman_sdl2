@@ -1,13 +1,13 @@
 #include "entities/Player.h"
 #include "entities/Sprite.h"
 
-Player::Player(SDL_Renderer *renderer, std::shared_ptr<SDL_Texture> texture) : MovingEntity(texture, renderer)
+Player::Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : MovingEntity(texture, renderer)
 {
     upAnimation = std::make_shared<Animation>();
     downAnimation = std::make_shared<Animation>();
     leftAnimation = std::make_shared<Animation>();
     rightAnimation = std::make_shared<Animation>();
-    // deathAnimation = std::make_shared<Animation>();
+    deathAnimation = std::make_shared<Animation>();
     // animation = std::shared_ptr<Animation>[5];
 
     // move up
@@ -31,15 +31,21 @@ Player::Player(SDL_Renderer *renderer, std::shared_ptr<SDL_Texture> texture) : M
     rightAnimation->addAnimationObject(AnimationObject(64, 144, 32, 48));
     rightAnimation->addAnimationObject(AnimationObject(96, 144, 32, 48));
     // die
-    // deathAnimation->addAnimationObject(AnimationObject(0, 192, 32, 48));
-    // deathAnimation->addAnimationObject(AnimationObject(32, 192, 32, 48));
-    // deathAnimation->addAnimationObject(AnimationObject(64, 192, 32, 48));
-    // deathAnimation->addAnimationObject(AnimationObject(96, 192, 32, 48));
+    deathAnimation->addAnimationObject(AnimationObject(0, 192, 32, 48));
+    deathAnimation->addAnimationObject(AnimationObject(32, 192, 32, 48));
+    deathAnimation->addAnimationObject(AnimationObject(64, 192, 32, 48));
+    deathAnimation->addAnimationObject(AnimationObject(96, 192, 32, 48));
 
+
+    for (auto &anim : animation)
+    {
+        anim.second->setSprite(this);
+    }
     animation[directions::UP] = upAnimation;
     animation[directions::DOWN] = downAnimation;
     animation[directions::LEFT] = leftAnimation;
     animation[directions::RIGHT] = rightAnimation;
+    
 }
 
 void Player::setDirection(directions _direction)

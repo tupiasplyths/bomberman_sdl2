@@ -55,3 +55,10 @@ void Animation::update(const int delta)
     }
 };
 
+AnimationObject::AnimationObject(int positionX, int positionY, int width, int height)
+{
+    this->positionX = positionX;
+    this->positionY = positionY;
+    this->width = width;
+    this->height = height;
+}

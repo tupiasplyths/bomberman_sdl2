@@ -11,12 +11,12 @@
 
 GameScene::GameScene(App *_app) : Scene(_app)
 {
-    std::cout << app->getTextures()->getTexture(Texture::texture_name::WALL) << std::endl;
-    spawnPlayer();
-    spawnWall(512, 256);
     auto text = std::make_shared<Text>(app->getTextures()->getFont(), "GameScene", app->getRenderer());
     text->setSize(app->getWindowWidth() / 16, app->getWindowHeight() / 80);
     addObject(text);
+    std::cout << app->getTextures()->getTexture(Texture::texture_name::WALL) << std::endl;
+    spawnPlayer();
+    spawnWall(512, 256);
 }
 
 void GameScene::update(const int delta)

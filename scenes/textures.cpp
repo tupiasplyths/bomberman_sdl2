@@ -4,11 +4,11 @@
 
 void Texture::load(SDL_Renderer *renderer)
 {
-    loadTexture(renderer, BOMB, "assets/textures/Bomb.png");
-    loadTexture(renderer, PLAYER, "assets/textures/bomber1.png");
-    loadTexture(renderer, BALLOOM, "assets/textures/balloom.png");
-    loadTexture(renderer, BRICK, "assets/textures/Brick.png");
-    loadTexture(renderer, WALL, "assets/textures/Wall.png");
+    loadTexture(renderer, texture_name::BOMB, "assets/textures/Bomb.png");
+    loadTexture(renderer, texture_name::PLAYER, "assets/textures/bomber1.png");
+    loadTexture(renderer, texture_name::BALLOOM, "assets/textures/balloom.png");
+    loadTexture(renderer, texture_name::BRICK, "assets/textures/Brick.png");
+    loadTexture(renderer, texture_name::WALL, "assets/textures/Wall.png");
 
     loadFont();
 }

@@ -10,7 +10,7 @@
 class Texture
 {
 public:
-    enum texture_name : int
+    enum class texture_name : int
     {
         BOMB,
         PLAYER,
@@ -21,12 +21,20 @@ public:
     void load(SDL_Renderer *renderer);
     std::shared_ptr<SDL_Texture> getTexture(Texture::texture_name name);
     std::shared_ptr<TTF_Font> getFont();
+    struct EnumClassHash
+    {
+        template <typename T>
+        std::size_t operator()(T t) const
+        {
+            return static_cast<std::size_t>(t);
+        }
+    };
 
 private:
     int texture_width = 0;
     int texture_height = 0;
     std::shared_ptr<TTF_Font> font = nullptr;
-    std::unordered_map<texture_name, std::shared_ptr<SDL_Texture>> textures;
+    std::unordered_map<texture_name, std::shared_ptr<SDL_Texture>, EnumClassHash> textures;
     void loadFont();
     void loadTexture(SDL_Renderer *renderer, texture_name name, const char *filename);
 };

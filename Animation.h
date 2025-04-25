@@ -18,7 +18,6 @@ public:
 class Animation
 {
 public:
-    Animation();
     void addAnimationObject(AnimationObject object);
     void setSprite(Sprite *_sprite);
     void setAnimationInterval(int milisec);

@@ -17,6 +17,13 @@ public:
         RIGHT,
         NONE,
     };
+    struct EnumClassHash
+    {
+        template<typename T> std::size_t operator()(T t) const
+        {
+            return static_cast<std::size_t>(t);
+        }
+    };
     // Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer);
     Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer);
     void setDirection(directions direction);
@@ -33,7 +40,9 @@ private:
     std::shared_ptr<Animation> leftAnimation;
     std::shared_ptr<Animation> rightAnimation;
     std::shared_ptr<Animation> deathAnimation;
-    std::unordered_map<directions, std::shared_ptr<Animation>> animation;
+    std::unordered_map<directions, std::shared_ptr<Animation>, EnumClassHash> animation;
 };
+
+
 
 #endif // _PLAYER_H_

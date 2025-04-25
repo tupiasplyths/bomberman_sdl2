@@ -6,3 +6,5 @@ CMakeCache.txt
 bomberman
 CMakeFiles/
 CMakePresets.json
+*.ninja
+*.ninja*

@@ -12,6 +12,7 @@ find_package(SDL2_IMAGE REQUIRED)
 include_directories(${SDL2_IMAGE_INCLUDE_DIR})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+# target_include_directories(bomberman PRIVATE E:/msys2/mingw64/include)
 # include_directories(${CMAKE_SOURCE_DIR})
 # include_directories(${CMAKE_SOURCE_DIR}/scenes)
 # include_directories(${CMAKE_SOURCE_DIR}/entities)
@@ -52,13 +53,22 @@ set (
 add_executable(bomberman ${SOURCES})
 
 # target_link_libraries(
-#     bomberman 
+#     bomberman
 #     ${SDL2_LIBRARIES}
 #     ${SDL2_TTF_LIBRARIES}
 #     ${SDL2_IMAGE_LIBRARY}
 # )
 
-target_link_libraries(bomberman ${SDL2_LIBRARIES} -lSDL2_ttf -lSDL2_image)
+target_link_libraries(
+    bomberman 
+    SDL2::SDL2main 
+    SDL2::SDL2
+    SDL2_ttf::SDL2_ttf
+    SDL2_image::SDL2_image
+    -static
+)
+
+# target_link_libraries(bomberman ${SDL2_LIBRARIES} -lSDL2_ttf -lSDL2_image)
 
 install(TARGETS bomberman
     RUNTIME DESTINATION .

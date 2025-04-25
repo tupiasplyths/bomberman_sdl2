@@ -25,8 +25,8 @@ public:
     };
     const int explosionPositions[5][2] = {{0, 0}, {0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // cell's position of bang
 
-    GameScene(App * _app, std::string name);
-    virtual void update(const int delta);
+    GameScene(App *_app, std::string name);
+    virtual void update(const int delta) override;
     virtual void onEvent(const SDL_Event &event);
     bool checkCollision(const SDL_Rect &rect1, const SDL_Rect &rect2) const;
 
@@ -45,7 +45,12 @@ private:
     void updateTimers(const int delta);
     void updateBombTimer(const int delta);
     void updateExplosionTimer(const int delta);
-    void debug();
+    void updateMovement(const bool keyPressed, const int keycode);
+    void updatePlayerCollision();
+    void updateEnemiesCollision();
+    void updateExplosionsCollision();
+    void destroyBrick(std::shared_ptr<Object> object);
+    // void debug();
     int playerStartPosX = 0;
     int playerStartPosY = 0;
     std::vector<std::shared_ptr<Enemy>> enemies;
@@ -53,8 +58,8 @@ private:
     std::shared_ptr<Sprite> bomb = nullptr;
     std::shared_ptr<Sprite> portal = nullptr;
     std::vector<std::shared_ptr<Object>> explosions;
+    std::vector<std::pair<Tile, std::shared_ptr<Object>>> collisions;
     void exit();
-    void updateMovement(const bool keyPressed, const int keycode);
     int backgroundCount = 0;
     int bombTimer = 0;
     int explosionTimer = 0;

@@ -18,3 +18,8 @@ bool MovingEntity::getDead()
 {
     return isDead;
 }
+
+void MovingEntity::revertLastMove()
+{
+    setPosition(getX() - prevX, getY() - prevY);
+}

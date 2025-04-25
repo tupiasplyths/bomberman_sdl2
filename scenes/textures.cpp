@@ -11,6 +11,7 @@ void Texture::load(SDL_Renderer *renderer)
     loadTexture(renderer, texture_name::WALL, "assets/textures/Wall.png");
     loadTexture(renderer, texture_name::GRASS, "assets/textures/Grass.png");
     loadTexture(renderer, texture_name::EXPLOSION, "assets/textures/bang.png");
+    loadTexture(renderer, texture_name::PORTAL, "assets/textures/Portal.png");
 
     loadFont();
 }

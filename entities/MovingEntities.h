@@ -11,6 +11,7 @@ public:
     bool isMoving() const;
     void setDead();
     bool getDead();
+    void revertLastMove();
 
 protected:
     int prevX = 0;

@@ -22,7 +22,7 @@ class Scene
         void draw();
         virtual void onEvent(const SDL_Event &event);
         void onActivate();
-        void update(const int delta);
+        virtual void update(const int delta);
         std::string name;
 };
 

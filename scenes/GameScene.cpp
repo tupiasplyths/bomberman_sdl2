@@ -53,6 +53,9 @@ void GameScene::update(const int delta)
 {
     Scene::update(delta);
     updateTimers(delta);
+    updatePlayerCollision();
+    updateEnemiesCollision();
+    updateExplosionsCollision();
 }
 
 void GameScene::updateTimers(const int delta)
@@ -76,7 +79,6 @@ void GameScene::updateBombTimer(const int delta)
     }
     else
     {
-        std::cout << "Bomb exploded" << std::endl;
         spawnExplosion(bomb.get());
         removeObject(bomb);
         bomb = nullptr;
@@ -102,6 +104,148 @@ void GameScene::updateExplosionTimer(const int delta)
             gameMap[explosionY][explosionX] = Tile::EmptyGrass;
         }
         explosions.clear();
+    }
+}
+
+void GameScene::updatePlayerCollision()
+{
+    if (player == nullptr)
+    {
+        return;
+    }
+    if (!player->isMoving())
+    {
+        return;
+    }
+    SDL_Rect playerRect = player->getRect();
+    playerRect.w = static_cast<int>(playerRect.w * 0.5);
+    playerRect.h = static_cast<int>(playerRect.h * 0.5);
+    for (const auto &collisionObject : collisions)
+    {
+        if (checkCollision(playerRect, collisionObject.second->getRect()))
+        {
+            player->revertLastMove();
+        }
+    }
+    if (portal != nullptr)
+    {
+        if (checkCollision(playerRect, portal->getRect()))
+        {
+            if (enemies.size() == 0)
+            {
+                std::cout << "You win!" << std::endl;
+            }
+        }
+    }
+}
+
+void GameScene::updateEnemiesCollision()
+{
+    // iterate enemies for collision
+    for (const auto &enemy : enemies)
+    {
+        // iterate drawables for collision
+        for (const auto &collisionObject : collisions)
+        {
+            // check for block collision
+            if (checkCollision(enemy->getRect(), collisionObject.second->getRect()))
+            {
+                // stop moving on collision detection
+                enemy->setMoving(false);
+                enemy->revertLastMove();
+            }
+        }
+        // check for bomb collision
+        if (bomb && checkCollision(enemy->getRect(), bomb->getRect()))
+        {
+            // stop moving on collision detection
+            enemy->setMoving(false);
+            enemy->revertLastMove();
+        }
+        // check for player collision
+        if (player != nullptr)
+        {
+            // set width to smaller size
+            SDL_Rect playerRect = player->getRect();
+            playerRect.w = static_cast<int>(playerRect.w * 0.2);
+            playerRect.h = static_cast<int>(playerRect.h * 0.2);
+            if (checkCollision(playerRect, enemy->getRect()))
+            {
+                // player killed by enemy
+                removeObject(player);
+                player = nullptr;
+                exit();
+            }
+        }
+        // if (player != nullptr)
+        // {
+        //     // can attack?
+        //     if (!enemy->isMovingToCell() && enemy->canAttack())
+        //     {
+        //         // check for attack radius
+        //         if (abs(player->getPositionX() + player->getWidth() / 2 - enemy->getPositionX() -
+        //                 enemy->getWidth() / 2) < enemy->getAttackRadius() &&
+        //             abs(player->getPositionY() + player->getHeight() / 2 - enemy->getPositionY() -
+        //                 enemy->getHeight() / 2) < enemy->getAttackRadius())
+        //         {
+        //             // start follow to player
+        //             followToPlayer(enemy.get());
+        //         }
+        //     }
+        // }
+    }
+}
+
+void GameScene::updateExplosionsCollision()
+{
+    // check for bang collision
+    for (const auto &explosion : explosions)
+    {
+        // check bricks
+        auto itCollision = collisions.begin();
+        while (itCollision != collisions.end())
+        {
+            if ((*itCollision).first == Tile::Brick)
+            {
+                auto brick = (*itCollision).second;
+                if (checkCollision(brick->getRect(), explosion->getRect()))
+                {
+                    destroyBrick(brick);
+                    // remove brick from collision array
+                    itCollision = collisions.erase(itCollision);
+                    continue;
+                }
+            }
+            ++itCollision;
+        }
+        // check enemies
+        auto itEnemies = enemies.begin();
+        while (itEnemies != enemies.end())
+        {
+            SDL_Rect enemyRect = (*itEnemies)->getRect();
+            enemyRect.w = static_cast<int>(enemyRect.w * 0.2);
+            enemyRect.h = static_cast<int>(enemyRect.h * 0.2);
+            if (checkCollision(enemyRect, explosion->getRect()))
+            {
+                removeObject(*itEnemies);
+                itEnemies = enemies.erase(itEnemies);
+                continue;
+            }
+            ++itEnemies;
+        }
+        // check player
+        if (player != nullptr)
+        {
+            SDL_Rect playerRect = player->getRect();
+            playerRect.w = static_cast<int>(playerRect.w * 0.2f);
+            playerRect.h = static_cast<int>(playerRect.h * 0.2f);
+            if (checkCollision(playerRect, explosion->getRect()))
+            {
+                removeObject(player);
+                player = nullptr;
+                exit();
+            }
+        }
     }
 }
 
@@ -313,6 +457,15 @@ void GameScene::spawnGrass(const int posX, const int posY)
     backgroundCount++;
 }
 
+void GameScene::spawnPortal(Object *object)
+{
+    portal =
+        std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::PORTAL), app->getRenderer());
+    portal->setSize(32, 32);
+    portal->setPosition(object->getX(), object->getY());
+    insertObject(portal, backgroundCount);
+}
+
 void GameScene::generateMap()
 {
     std::ifstream file("assets/textures/maps/Level1.txt");
@@ -399,4 +552,32 @@ void GameScene::generateEnemies()
         // spawn enemy
         spawnBalloom(cellX * 32, cellY * 32);
     }
+}
+
+void GameScene::destroyBrick(std::shared_ptr<Object> brick)
+{
+    // we need door if don't have
+    if (portal == nullptr)
+    {
+        // left bricks count
+        long bricksCount = std::count_if(collisions.begin(), collisions.end(),
+                                         [](auto collision)
+                                         { return collision.first == Tile::Brick; });
+        // random for door spawn
+        const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        auto randDoor = std::bind(std::uniform_int_distribution<int>(0, 10),
+                                  std::mt19937(static_cast<unsigned int>(seed)));
+        // spawn door if we can
+        if (randDoor() == 0 || bricksCount <= 1)
+        {
+            spawnPortal(brick.get());
+        }
+    }
+    // change brick to grass and remove it
+    const int brickCellX = static_cast<int>(
+        round(brick->getX() / static_cast<float>(32)));
+    const int brickCellY = static_cast<int>(
+        round(brick->getY() / static_cast<float>(32)));
+    gameMap[brickCellY][brickCellX] = Tile::Grass;
+    removeObject(brick);
 }

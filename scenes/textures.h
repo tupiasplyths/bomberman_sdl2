@@ -18,6 +18,7 @@ public:
         BRICK,
         WALL,
         GRASS,
+        EXPLOSION,
     };
     void load(SDL_Renderer *renderer);
     std::shared_ptr<SDL_Texture> getTexture(Texture::texture_name name);

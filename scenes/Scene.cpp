@@ -11,7 +11,7 @@ Scene::Scene(App * _app, std::string name)
 void Scene::addObject(std::shared_ptr<Object> object)
 {
     objects.push_back(object);
-    printf("Added object to scene\nCurrent objects in scene: %d\n", (int)objects.size());
+    // printf("Added object to scene\nCurrent objects in scene: %d\n", (int)objects.size());
 }
 
 void Scene::removeObject(std::shared_ptr<Object> object)

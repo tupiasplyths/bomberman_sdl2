@@ -42,6 +42,8 @@ private:
     void spawnPortal(Object *object);
     void generateMap();
     void generateEnemies();
+    void updateBombTimer(const int delta);
+    void updateExplosionTimer(const int delta);
     void debug();
     int playerStartPosX = 0;
     int playerStartPosY = 0;
@@ -49,6 +51,7 @@ private:
     std::shared_ptr<Player> player;
     std::shared_ptr<Sprite> bomb = nullptr;
     std::shared_ptr<Sprite> portal = nullptr;
+    std::vector<std::shared_ptr<Object>> explosions;
     void exit();
     void updateMovement(const bool keyPressed, const int keycode);
     int backgroundCount = 0;

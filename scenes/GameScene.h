@@ -42,6 +42,7 @@ private:
     void spawnPortal(Object *object);
     void generateMap();
     void generateEnemies();
+    void updateTimers(const int delta);
     void updateBombTimer(const int delta);
     void updateExplosionTimer(const int delta);
     void debug();

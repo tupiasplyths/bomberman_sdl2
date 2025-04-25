@@ -35,11 +35,6 @@ GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
     generateEnemies();
 }
 
-void GameScene::update(const int delta)
-{
-    Scene::update(delta);
-}
-
 void GameScene::spawnPlayer()
 {
     std::cout << "Player spawned" << std::endl;
@@ -52,6 +47,62 @@ void GameScene::spawnPlayer()
     player->setSize(32, 48);
     player->setClip(32, 48, 0, 48);
     addObject(player);
+}
+
+void GameScene::update(const int delta)
+{
+    Scene::update(delta);
+    updateTimers(delta);
+}
+
+void GameScene::updateTimers(const int delta)
+{
+    if (bomb != nullptr)
+    {
+        updateBombTimer(delta);
+    }
+
+    if (explosions.size() > 0)
+    {
+        updateExplosionTimer(delta);
+    }
+}
+
+void GameScene::updateBombTimer(const int delta)
+{
+    if (bombTimer > 0)
+    {
+        bombTimer -= delta;
+    }
+    else
+    {
+        std::cout << "Bomb exploded" << std::endl;
+        spawnExplosion(bomb.get());
+        removeObject(bomb);
+        bomb = nullptr;
+    }
+}
+
+void GameScene::updateExplosionTimer(const int delta)
+{
+    if (explosionTimer > 0)
+    {
+        explosionTimer -= delta;
+    }
+    else
+    {
+        for (auto &explosion : explosions)
+        {
+            removeObject(explosion);
+            // change to grass
+            const int explosionX = static_cast<int>(
+                round((explosion->getX() / static_cast<float>(32))));
+            const int explosionY = static_cast<int>(
+                round((explosion->getY() / static_cast<float>(32))));
+            gameMap[explosionY][explosionX] = Tile::EmptyGrass;
+        }
+        explosions.clear();
+    }
 }
 
 void GameScene::spawnWall(const int posX, const int posY)
@@ -93,6 +144,7 @@ void GameScene::spawnBomb(Object *object)
     {
         return;
     }
+    std::cout << "Bomb placed" << std::endl;
 
     int bombX = object->getX();
     int bombY = object->getY();
@@ -117,6 +169,14 @@ void GameScene::spawnBomb(Object *object)
     animation->setSprite(bomb.get());
     bomb->addAnimation(animation);
 
+    const int bombCellX = static_cast<int>(
+        round(bomb->getX() / static_cast<float>(32)));
+    const int bombCellY = static_cast<int>(
+        round(bomb->getY()  / static_cast<float>(32)));
+    gameMap[bombCellY][bombCellX] = Tile::Bomb;
+
+    bombTimer = 1500;
+    animation->play();
 }
 
 void GameScene::onEvent(const SDL_Event &event)
@@ -184,7 +244,6 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
                 break;
             case SDL_SCANCODE_SPACE:
                 if (player->getDead()) return;
-                std::cout << "Bomb placed" << std::endl;
                 spawnBomb(player.get());
                 break;
             case SDL_SCANCODE_ESCAPE:
@@ -200,20 +259,6 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
     else 
     {
         player->setDirection(Player::directions::NONE);
-    }
-}
-
-void GameScene::updateBombTimer(const int delta)
-{
-    if (bombTimer > 0)
-    {
-        bombTimer -= delta;
-    }
-    else
-    {
-        spawnExplosion(bomb.get());
-        removeObject(bomb);
-        bomb = nullptr;
     }
 }
 
@@ -252,27 +297,7 @@ void GameScene::spawnExplosion(Object *object)
     explosionTimer = 800;
 }
 
-void GameScene::updateExplosionTimer(const int delta)
-{
-    if (explosionTimer> 0)
-    {
-        explosionTimer -= delta;
-    }
-    else
-    {
-        for (auto &explosion : explosions)
-        {
-            removeObject(explosion);
-            // change to grass
-            const int explosionX = static_cast<int>(
-                round((explosion->getX() / static_cast<float>(32))));
-            const int explosionY = static_cast<int>(
-                round((explosion->getY() / static_cast<float>(32))));
-            gameMap[explosionY][explosionX] = Tile::EmptyGrass;
-        }
-        explosions.clear();
-    }
-}
+
 // void GameScene::debug()
 // {
 //     std::cout << player->getX() << " " << player->getY() << std::endl;

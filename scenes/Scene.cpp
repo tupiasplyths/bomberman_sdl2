@@ -22,6 +22,7 @@ void Scene::removeObject(std::shared_ptr<Object> object)
 void Scene::insertObject(std::shared_ptr<Object> object, int position)
 {
     objects.insert(objects.begin() + position, object);
+    printf("Inserted object at %d\nCurrent objects in scene: %d\n", position, (int)objects.size());
 }
 
 void Scene::update(const int delta)

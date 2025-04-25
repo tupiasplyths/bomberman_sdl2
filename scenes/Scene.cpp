@@ -19,6 +19,11 @@ void Scene::removeObject(std::shared_ptr<Object> object)
     objects.erase(std::remove(objects.begin(), objects.end(), object), objects.end());
 }
 
+void Scene::insertObject(std::shared_ptr<Object> object, int position)
+{
+    objects.insert(objects.begin() + position, object);
+}
+
 void Scene::update(const int delta)
 {
     for (auto &object : objects)

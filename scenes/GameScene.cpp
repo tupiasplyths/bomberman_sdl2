@@ -4,6 +4,10 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <chrono>
+#include <random>
+#include <algorithm>
+#include <functional>
 
 #include "scenes/Scene.h"
 #include "entities/Player.h"
@@ -28,6 +32,7 @@ GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
     // addObject(wall1);
     generateMap();
     spawnPlayer();
+    generateEnemies();
 }
 
 void GameScene::update(const int delta)
@@ -62,6 +67,7 @@ void GameScene::spawnWall(const int posX, const int posY)
     wall->setSize(32, 32);
     wall->setClip(32, 32, 0, 0);
     addObject(wall);
+    backgroundCount++;
 }
 
 void GameScene::spawnBrick(const int posX, const int posY)
@@ -81,6 +87,38 @@ void GameScene::spawnBalloom(const int posX, const int posY)
     balloom->setClip(32, 32, 0, 0);
     addObject(balloom);
     enemies.push_back(balloom);
+}
+
+void GameScene::spawnBomb(Object *object)
+{
+    if (bomb || !object)
+    {
+        return;
+    }
+
+    int bombX = object->getX();
+    int bombY = object->getY();
+
+    const int bombDiffX = bombX % 32;
+    const int bombDiffY = bombY % 32;
+
+    bombX = bombDiffX > 16? bombX + 32 - bombDiffX : bombX - bombDiffX;
+    bombY = bombDiffY > 16? bombY + 32 - bombDiffY : bombY - bombDiffY;
+
+    bomb = std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::BOMB), app->getRenderer());
+    bomb->setPosition(bombX, bombY);
+    bomb->setSize(32, 32);
+    insertObject(bomb, backgroundCount);
+
+    auto animation = std::make_shared<Animation>();
+    animation->addAnimationObject(AnimationObject(0, 0, 32, 32));
+    animation->addAnimationObject(AnimationObject(32, 0, 32, 32));
+    animation->addAnimationObject(AnimationObject(64, 0, 32, 32));
+    animation->addAnimationObject(AnimationObject(96, 0, 32, 32));
+
+    animation->setSprite(bomb.get());
+    bomb->addAnimation(animation);
+
 }
 
 void GameScene::onEvent(const SDL_Event &event)
@@ -104,8 +142,9 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
     if (player == nullptr) return;
     if (player->getDead())
     {
-        app->addScene("gameover", std:: make_shared<GameOverScene>(app, "gameover"));
-        app->activateScene("gameover");
+        // app->addScene("gameover", std:: make_shared<GameOverScene>(app, "gameover"));
+        // app->activateScene("gameover");
+        app->activateScene("menu");
         app->removeScene("game");
         return;
     } 
@@ -172,6 +211,7 @@ void GameScene::spawnGrass(const int posX, const int posY)
     grass->setSize(32, 32);
     grass->setClip(32, 32, 0, 0);
     addObject(grass);
+    backgroundCount++;
 }
 
 void GameScene::generateMap()
@@ -193,20 +233,26 @@ void GameScene::generateMap()
             {
             case 'W':
                 spawnWall(x * 32, y * 32);
+                gameMap[y][x] = Tile::Wall;
                 break;
             case 'B':
+                spawnGrass(x * 32, y * 32);
                 spawnBrick(x * 32, y * 32);
+                gameMap[y][x] = Tile::Brick;
                 break;
             case '1':
+                spawnGrass(x * 32, y * 32);
+                gameMap[y][x] = Tile::Grass;
                 playerStartPosX = x * 32;
                 playerStartPosY = y * 32;
-                spawnGrass(x * 32, y * 32);
                 break;
             case 'b':
+                gameMap[y][x] = Tile::Grass;
                 spawnGrass(x * 32, y * 32);
-                spawnBalloom(x * 32, y * 32);
+                // spawnBalloom(x * 32, y * 32);
                 break;
             case '0':
+                gameMap[y][x] = Tile::Grass;
                 spawnGrass(x * 32, y * 32);
                 break;
             case ' ':
@@ -225,4 +271,33 @@ void GameScene::generateMap()
 bool GameScene::checkCollision(const SDL_Rect &rect1, const SDL_Rect &rect2) const
 {
     return SDL_HasIntersection(&rect1, &rect2);
+}
+
+void GameScene::generateEnemies()
+{
+    // we need enemy in random tile
+    const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    auto randCount = std::bind(std::uniform_int_distribution<int>(3, 6),
+                               std::mt19937(static_cast<unsigned int>(seed)));
+    auto randType = std::bind(std::uniform_int_distribution<int>(0, 1),
+                              std::mt19937(static_cast<unsigned int>(seed)));
+    auto randCellX = std::bind(std::uniform_int_distribution<int>(0, 16 - 1),
+                               std::mt19937(static_cast<unsigned int>(seed)));
+    auto randCellY = std::bind(std::uniform_int_distribution<int>(0, 16 - 1),
+                               std::mt19937(static_cast<unsigned int>(seed)));
+    // start enemies spawn
+    for (int i = 0; i < randCount(); i++)
+    {
+        // try to find suitable tile
+        int cellX = randCellX();
+        int cellY = randCellY();
+        while (gameMap[cellX][cellY] == Tile::Brick || gameMap[cellX][cellY] == Tile::Wall ||
+               gameMap[cellX][cellY] == Tile::EmptyGrass)
+        {
+            cellX = randCellX();
+            cellY = randCellY();
+        }
+        // spawn enemy
+        spawnBalloom(cellX * 32, cellY * 32);
+    }
 }

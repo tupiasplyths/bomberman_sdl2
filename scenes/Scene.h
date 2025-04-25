@@ -18,6 +18,7 @@ class Scene
         Scene(App *app, std::string name);
         void addObject(std::shared_ptr<Object> object);
         void removeObject(std::shared_ptr<Object> object);
+        void insertObject(std::shared_ptr<Object> object, int pos);
         void draw();
         virtual void onEvent(const SDL_Event &event);
         void onActivate();

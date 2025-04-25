@@ -11,10 +11,13 @@ class GameOverScene : public Scene
 {
 public:
     GameOverScene(App *_app, std::string name);
-    void onEvent(const SDL_Event &event);
-    void onActivate();
+    // void onEvent(const SDL_Event &event);
+    // void onActivate();
+    virtual void update(const int delta);
 
 private:
+    int untilNextSceneTimer = 0;
+    int sceneTimer = 2500;
     std::shared_ptr<Text> text;
     const SDL_Color default_color = {255, 255, 255, 255};
 };

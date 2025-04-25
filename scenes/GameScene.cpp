@@ -107,11 +107,13 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
         app->addScene("gameover", std:: make_shared<GameOverScene>(app, "gameover"));
         app->activateScene("gameover");
         app->removeScene("game");
+        return;
     } 
     for (auto &enemy : enemies)
     {
         if (checkCollision(player->getRect(), enemy->getRect()))
         {
+            std::cout << "Player hit by enemy" << std::endl; 
             player->setDead();
             player->setDirection(Player::directions::NONE);
             break;
@@ -123,16 +125,23 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
         switch (keycode)
         {
             case SDL_SCANCODE_W:
+                if (player->getDead()) break;
                 player->setDirection(Player::directions::UP);
                 // std::cout << "move up" << std::endl;
                 break;
             case SDL_SCANCODE_A:
+                if (player->getDead())
+                    break;
                 player->setDirection(Player::directions::LEFT);
                 break;
             case SDL_SCANCODE_S:
+                if (player->getDead())
+                    break;
                 player->setDirection(Player::directions::DOWN);
                 break;
             case SDL_SCANCODE_D:
+                if (player->getDead())
+                    break;
                 player->setDirection(Player::directions::RIGHT);
                 break;
             case SDL_SCANCODE_ESCAPE:

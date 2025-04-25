@@ -10,7 +10,7 @@
 class MenuScene : public Scene
 {
 public:
-    MenuScene(App *_app);
+    MenuScene(App *_app, std::string name);
     void onEvent(const SDL_Event &event);
     void onActivate();
 private:

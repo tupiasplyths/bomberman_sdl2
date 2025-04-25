@@ -8,3 +8,13 @@ bool MovingEntity::isMoving() const
 {
     return moving;
 }
+
+void MovingEntity::setDead()
+{
+    isDead = true;
+}
+
+bool MovingEntity::getDead()
+{
+    return isDead;
+}

@@ -26,11 +26,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 # find_library(SDL2_TTF_LIBRARY NAME SDL2_ttf)
 # find_library(SDL2_IMAGE_LIBRARY NAME SDL2_image)
-
+# -Wnon-virtual-dtor -Wpedantic -pedantic-errors -Wshadow -Wextra  -Wunused -Wconversion -Wall 
 if(MSVC)
     add_compile_options(/std:c++17 /W4 /MT )
 else()
-    add_compile_options(-std=c++17 -Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wunused -Wpedantic -pedantic-errors -Wconversion)
+    add_compile_options(-std=c++17 )
 endif()
 
 set (
@@ -38,16 +38,17 @@ set (
     ${CMAKE_CURRENT_SOURCE_DIR}/game.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/app.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Animation.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/entities/MovingEntities.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/entities/Enemy.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Object.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/entities/Text.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Sprite.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/entities/MovingEntities.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entities/Player.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/entities/Enemy.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/entities/Text.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/textures.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/Scene.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/MenuScene.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/GameScene.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scenes/GameOverScene.cpp
 )
 
 add_executable(bomberman ${SOURCES})

@@ -3,13 +3,15 @@
 #include <algorithm>
 #include "Scene.h"
 
-Scene::Scene(App * _app)
+Scene::Scene(App * _app, std::string name)
 {
+    this->name = name;
     this->app = _app;
 }
 void Scene::addObject(std::shared_ptr<Object> object)
 {
     objects.push_back(object);
+    printf("Added object to scene\nCurrent objects in scene: %d\n", (int)objects.size());
 }
 
 void Scene::removeObject(std::shared_ptr<Object> object)
@@ -35,10 +37,8 @@ void Scene::draw()
 
 void Scene::onEvent(const SDL_Event & /*event*/)
 {
-
 }
 
 void Scene::onActivate() 
 {
-
 }

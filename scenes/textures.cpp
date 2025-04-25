@@ -9,6 +9,7 @@ void Texture::load(SDL_Renderer *renderer)
     loadTexture(renderer, texture_name::BALLOOM, "assets/textures/balloom.png");
     loadTexture(renderer, texture_name::BRICK, "assets/textures/Brick.png");
     loadTexture(renderer, texture_name::WALL, "assets/textures/Wall.png");
+    loadTexture(renderer, texture_name::GRASS, "assets/textures/Grass.png");
 
     loadFont();
 }

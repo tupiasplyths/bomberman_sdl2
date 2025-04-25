@@ -7,9 +7,11 @@
 
 Sprite::Sprite(std::shared_ptr<SDL_Texture> _texture, SDL_Renderer *_renderer) : Object(_renderer)
 {
+    if (_texture == nullptr) printf("Sprite texture is null\n");
     this->texture = _texture;
+    if (texture == nullptr) printf ("Sprite texture is null\n");
     int width, height;
-    SDL_QueryTexture(this->texture.get(), NULL, NULL, &width, &height);
+    SDL_QueryTexture(texture.get(), NULL, NULL, &width, &height);
     clip.x = 0;
     clip.y = 0;
     clip.h = height;
@@ -31,4 +33,9 @@ void Sprite::update(const int delta)
 void Sprite::addAnimation(std::shared_ptr<Animation> animation)
 {
     animations.push_back(animation);
+}
+
+bool Sprite::hasTexture()
+{
+    return texture != nullptr;
 }

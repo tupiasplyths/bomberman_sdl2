@@ -71,18 +71,23 @@ void Object::update(const int /*delta*/)
 {
 }
 
-// void draw(const SDL_Rect &camera)
-// {
-//     if (renderer != nullptr && texture != nullptr)
-//     {
-//         SDL_Rect renderQuad = {rect.x - camera.x, rect.y - camera.y, rect.w, rect.h};
-//         SDL_RenderCopyEx(renderer, texture.get(), &clip, &renderQuad, 0, nullptr, flip);
-//     }
-// }
 void Object::draw()
 {
+    if (texture == nullptr)
+    {
+        printf("Texture is null\n");
+        // return;
+    }
+
+    if (this->texture == nullptr)
+    {
+        printf("This texture is null\n");
+        // return;
+    }
+
     if (renderer != nullptr && texture != nullptr)
     {
         SDL_RenderCopyEx(renderer, texture.get(), &clip, &rect, 0, nullptr, flip);
+        // printf("draw at %d %d\n", rect.x, rect.y);
     }
 }

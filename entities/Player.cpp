@@ -59,6 +59,11 @@ void Player::setDirection(directions _direction)
     case directions::NONE:
         if (lastDirection != directions::NONE)
             animation[lastDirection]->reset();
+        else 
+        {
+            animation[directions::DOWN]->play();
+            animation[directions::DOWN]->reset();
+        } 
         setMoving(false);
         break;
     default:
@@ -90,10 +95,12 @@ void Player::update(const int delta)
         {
             if (direction == directions::UP)
             {
+                // printf("moving up\n");
                 setPosition(getX(), getY() - moveDistance);
             }
             else
             {
+                // printf("moving down\n");
                 setPosition(getX(), getY() + moveDistance);
             }
         }
@@ -101,10 +108,12 @@ void Player::update(const int delta)
         {
             if (direction == directions::LEFT)
             {
+                // printf("moving left\n");
                 setPosition(getX() - moveDistance, getY());
             }
             else
             {
+                // printf("moving right\n");
                 setPosition(getX() + moveDistance, getY());
             }
         }

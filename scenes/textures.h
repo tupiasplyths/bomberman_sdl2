@@ -17,6 +17,7 @@ public:
         BALLOOM,
         BRICK,
         WALL,
+        GRASS,
     };
     void load(SDL_Renderer *renderer);
     std::shared_ptr<SDL_Texture> getTexture(Texture::texture_name name);

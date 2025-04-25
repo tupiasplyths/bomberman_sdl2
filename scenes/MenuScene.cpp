@@ -7,7 +7,7 @@
 #include "scenes/GameScene.h"
 // #include "entities/Sprite.h"
 
-MenuScene::MenuScene(App *_app) : Scene(_app)
+MenuScene::MenuScene(App *_app, std::string name) : Scene(_app, name)
 {
     startText = std::make_shared<Text>(app->getTextures()->getFont(), "Start", app->getRenderer());
     startText->setColor(selected);
@@ -29,7 +29,7 @@ void MenuScene::onEvent(const SDL_Event &event)
         {
         case SDL_SCANCODE_DOWN:
         case SDL_SCANCODE_S:
-            std::cout << "Down" << std::endl;
+            // std::cout << "Down" << std::endl;
             if (startItemSelected)
             {
                 startText->setColor(default_color);
@@ -46,7 +46,7 @@ void MenuScene::onEvent(const SDL_Event &event)
 
         case SDL_SCANCODE_W:
         case SDL_SCANCODE_UP:
-            std::cout << "Up" << std::endl;
+            // std::cout << "Up" << std::endl;
             if (startItemSelected)
             {
                 startText->setColor(selected);
@@ -63,7 +63,7 @@ void MenuScene::onEvent(const SDL_Event &event)
         case SDL_SCANCODE_RETURN:
             if (startItemSelected)
             {
-                app->addScene("game", std::make_shared<GameScene>(app));
+                app->addScene("game", std::make_shared<GameScene>(app, "game"));
                 app->activateScene("game");
                 std::cout << "Starting game..." << std::endl;
             }

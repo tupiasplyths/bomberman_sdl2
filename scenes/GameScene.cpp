@@ -3,20 +3,31 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
 
 #include "scenes/Scene.h"
 #include "entities/Player.h"
 #include "scenes/GameScene.h"
+#include "entities/Enemy.h"
+#include "scenes/GameOverScene.h"
 #include "app.h"
 
-GameScene::GameScene(App *_app) : Scene(_app)
+GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
 {
     auto text = std::make_shared<Text>(app->getTextures()->getFont(), "GameScene", app->getRenderer());
     text->setSize(app->getWindowWidth() / 16, app->getWindowHeight() / 80);
+    text->setPosition(0, app->getWindowHeight() - text->getHeight());
     addObject(text);
-    std::cout << app->getTextures()->getTexture(Texture::texture_name::WALL) << std::endl;
+    // std::shared_ptr<SDL_Texture> tmp = app->getTextures()->getTexture(Texture::texture_name::WALL);
+    // std::cout << tmp << std::endl;
+    // std::shared_ptr<Sprite> wall1 = std::make_shared<Sprite>(tmp, app->getRenderer());
+    // wall1->setSize(32, 32);
+    // std::cout << wall1->hasTexture() << std::endl;
+    // wall1->setPosition(256, 256);
+    // wall1->draw();
+    // addObject(wall1);
+    generateMap();
     spawnPlayer();
-    spawnWall(512, 256);
 }
 
 void GameScene::update(const int delta)
@@ -32,10 +43,44 @@ void GameScene::spawnPlayer()
         app->getTextures()->getTexture(Texture::texture_name::PLAYER),
         app->getRenderer()
     );
-    player->setPosition(app->getWindowWidth() / 2, app->getWindowHeight() / 2);
+    player->setPosition(playerStartPosX, playerStartPosY);
     player->setSize(32, 48);
-    player->setClip(0, 48, 32, 48);
+    player->setClip(32, 48, 0, 48);
     addObject(player);
+}
+
+void GameScene::spawnWall(const int posX, const int posY)
+{
+    auto wall = std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::WALL), app->getRenderer());
+    if (!wall->hasTexture()) 
+    {
+        printf("Err: texture is null\n");
+    }
+    else 
+        printf("Texture \n");
+    wall->setPosition(posX, posY);
+    wall->setSize(32, 32);
+    wall->setClip(32, 32, 0, 0);
+    addObject(wall);
+}
+
+void GameScene::spawnBrick(const int posX, const int posY)
+{
+    auto brick = std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::BRICK), app->getRenderer());
+    brick->setPosition(posX, posY);
+    brick->setSize(32, 32);
+    brick->setClip(32, 32, 0, 0);
+    addObject(brick);
+}
+
+void GameScene::spawnBalloom(const int posX, const int posY)
+{
+    auto balloom = std::make_shared<Enemy>(app->getTextures()->getTexture(Texture::texture_name::BALLOOM), app->getRenderer());
+    balloom->setPosition(posX, posY);
+    balloom->setSize(32, 32);
+    balloom->setClip(32, 32, 0, 0);
+    addObject(balloom);
+    enemies.push_back(balloom);
 }
 
 void GameScene::onEvent(const SDL_Event &event)
@@ -57,13 +102,29 @@ void GameScene::exit()
 void GameScene::updateMovement(const bool keyPressed, const int keycode)
 {
     if (player == nullptr) return;
+    if (player->getDead())
+    {
+        app->addScene("gameover", std:: make_shared<GameOverScene>(app, "gameover"));
+        app->activateScene("gameover");
+        app->removeScene("game");
+    } 
+    for (auto &enemy : enemies)
+    {
+        if (checkCollision(player->getRect(), enemy->getRect()))
+        {
+            player->setDead();
+            player->setDirection(Player::directions::NONE);
+            break;
+        }
+    }
+
     if (keyPressed)
     {
         switch (keycode)
         {
             case SDL_SCANCODE_W:
                 player->setDirection(Player::directions::UP);
-                std::cout << "move up" << std::endl;
+                // std::cout << "move up" << std::endl;
                 break;
             case SDL_SCANCODE_A:
                 player->setDirection(Player::directions::LEFT);
@@ -78,7 +139,7 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
                 exit();
                 break;
             case SDL_SCANCODE_BACKSLASH:
-                debug();
+                // debug();
                 break;
             default:
                 break;
@@ -90,17 +151,69 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
     }
 }
 
-void GameScene::spawnWall(const int posX, const int posY)
+// void GameScene::debug()
+// {
+//     std::cout << player->getX() << " " << player->getY() << std::endl;
+// }
+
+void GameScene::spawnGrass(const int posX, const int posY)
 {
-    auto wall = std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::WALL), app->getRenderer());
-    wall->setPosition(posX, posY);
-    wall->setSize(32, 32);
-    wall->setClip(0, 0, 32, 32);
-    addObject(wall);
-    std::cout << "Wall spawned" << std::endl;
+    auto grass = std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::GRASS), app->getRenderer());
+    grass->setPosition(posX, posY);
+    grass->setSize(32, 32);
+    grass->setClip(32, 32, 0, 0);
+    addObject(grass);
 }
 
-void GameScene::debug()
+void GameScene::generateMap()
 {
-    std::cout << player->getX() << " " << player->getY() << std::endl;
+    std::ifstream file("assets/textures/maps/Level1.txt");
+    if (!file.is_open())
+    {
+        std::cerr << "Error: Could not open map file!" << std::endl;
+        return;
+    }
+    std::string line;
+    int x = 0;
+    int y = 0;
+    while (std::getline(file, line))
+    {
+        for (int x = 0; x < line.length(); x++)
+        {
+            switch (line[x])
+            {
+            case 'W':
+                spawnWall(x * 32, y * 32);
+                break;
+            case 'B':
+                spawnBrick(x * 32, y * 32);
+                break;
+            case '1':
+                playerStartPosX = x * 32;
+                playerStartPosY = y * 32;
+                spawnGrass(x * 32, y * 32);
+                break;
+            case 'b':
+                spawnGrass(x * 32, y * 32);
+                spawnBalloom(x * 32, y * 32);
+                break;
+            case '0':
+                spawnGrass(x * 32, y * 32);
+                break;
+            case ' ':
+                // x--;
+                break;
+            default:
+                std::cout << "Unknown character in map file: " << line[x] << std::endl;
+                break;
+            }
+        }
+        y++;
+    }
+    file.close();
+}
+
+bool GameScene::checkCollision(const SDL_Rect &rect1, const SDL_Rect &rect2) const
+{
+    return SDL_HasIntersection(&rect1, &rect2);
 }

@@ -25,12 +25,12 @@ public:
     
 private:
     SDL_Window *main_window;
-    // SDL_Surface *main_surface;
+    SDL_Surface *main_surface;
     SDL_Renderer *renderer;
     SDL_Event main_window_event;
     bool running = false;
-    int window_width = 1280;
-    int window_height = 720;
+    int window_width = 512;
+    int window_height = 512;
     Texture *texture;
     std::unordered_map<std::string, std::shared_ptr<Scene>> scenes_list;
     std::shared_ptr<Scene> current_scene = nullptr;

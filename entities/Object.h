@@ -7,8 +7,8 @@
 class Object
 {
 protected:
-    SDL_Renderer *renderer = nullptr;
-    std::shared_ptr<SDL_Texture> texture = nullptr;
+    SDL_Renderer *renderer = nullptr; // renderer using
+    std::shared_ptr<SDL_Texture> texture = nullptr; // object's texture
     SDL_Rect rect;                         // for object position and size
     SDL_Rect clip;                         // for texture clipping
     SDL_RendererFlip flip = SDL_FLIP_NONE; // for texture flipping

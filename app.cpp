@@ -5,6 +5,7 @@
 
 #include "app.h"
 #include "scenes/MenuScene.h"
+#include "scenes/Scene.h"
 
 const double FRAME_RATE = 1.0 / 60.0;
 
@@ -47,13 +48,13 @@ App::App()
 
     texture = new Texture();
 
-    //     main_surface = SDL_GetWindowSurface(main_window);
-    //     if (!main_surface)
-    //     {
-    //         std::cout << "Failed to get window surface" << std::endl;
-    //         std::cout << SDL_GetError() << std::endl;
-    //         return;
-    //     }
+    main_surface = SDL_GetWindowSurface(main_window);
+    if (!main_surface)
+    {
+        std::cout << "Failed to get window surface" << std::endl;
+        std::cout << SDL_GetError() << std::endl;
+        return;
+    }
 }
 
 App::~App()
@@ -102,13 +103,20 @@ void App::run()
 
     std::cout << "textures loaded" << std::endl;
 
-    addScene("menu", std::make_shared<MenuScene>(this));
+    addScene("menu", std::make_shared<MenuScene>(this, "menu"));
     activateScene("menu");
     SDL_Event event;
     while (running)
     {
         while (SDL_PollEvent(&event))
         {
+            if (event.type == SDL_KEYDOWN)
+            {
+                if (event.key.keysym.scancode == SDL_SCANCODE_0)
+                {
+                    std::cout << "Current scene: " << current_scene->name << std::endl;
+                }
+            }
             current_scene->onEvent(event);
             // if (event.type == SDL_KEYDOWN) std::cout << "Some key is pressed" << std::endl;
             switch (event.type)
@@ -136,6 +144,10 @@ void App::removeScene(const std::string name)
     {
         std::cout << "Scene not found" << std::endl;
         return;
+    }
+    if (find_scene->second == current_scene)
+    {
+        current_scene = nullptr;
     }
     scenes_list.erase(find_scene);
 }

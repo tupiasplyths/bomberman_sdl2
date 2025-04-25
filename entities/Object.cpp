@@ -67,7 +67,7 @@ void Object::setFlip(SDL_RendererFlip _flip)
     this->flip = _flip;
 }
 
-void Object::update(const int delta)
+void Object::update(const int /*delta*/)
 {
 }
 

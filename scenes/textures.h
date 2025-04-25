@@ -23,6 +23,8 @@ public:
     std::shared_ptr<TTF_Font> getFont();
 
 private:
+    int texture_width = 0;
+    int texture_height = 0;
     std::shared_ptr<TTF_Font> font = nullptr;
     std::unordered_map<texture_name, std::shared_ptr<SDL_Texture>> textures;
     void loadFont();

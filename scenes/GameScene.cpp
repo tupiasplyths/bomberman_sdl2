@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <iostream>
 
 #include "scenes/Scene.h"
 #include "entities/Player.h"
@@ -10,7 +11,12 @@
 
 GameScene::GameScene(App *_app) : Scene(_app)
 {
+    std::cout << app->getTextures()->getTexture(Texture::texture_name::WALL) << std::endl;
     spawnPlayer();
+    spawnWall(512, 256);
+    auto text = std::make_shared<Text>(app->getTextures()->getFont(), "GameScene", app->getRenderer());
+    text->setSize(app->getWindowWidth() / 16, app->getWindowHeight() / 80);
+    addObject(text);
 }
 
 void GameScene::update(const int delta)
@@ -20,6 +26,7 @@ void GameScene::update(const int delta)
 
 void GameScene::spawnPlayer()
 {
+    std::cout << "Player spawned" << std::endl;
     player = std::make_unique<Player>
     (
         app->getTextures()->getTexture(Texture::texture_name::PLAYER),
@@ -44,6 +51,7 @@ void GameScene::exit()
 {
     app->activateScene("menu");
     app->removeScene("game");
+    std::cout << "Game scene exited" << std::endl;
 }
 
 void GameScene::updateMovement(const bool keyPressed, const int keycode)
@@ -55,6 +63,7 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
         {
             case SDL_SCANCODE_W:
                 player->setDirection(Player::directions::UP);
+                std::cout << "move up" << std::endl;
                 break;
             case SDL_SCANCODE_A:
                 player->setDirection(Player::directions::LEFT);
@@ -65,6 +74,12 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
             case SDL_SCANCODE_D:
                 player->setDirection(Player::directions::RIGHT);
                 break;
+            case SDL_SCANCODE_ESCAPE:
+                exit();
+                break;
+            case SDL_SCANCODE_BACKSLASH:
+                debug();
+                break;
             default:
                 break;
         }
@@ -73,4 +88,19 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
     {
         player->setDirection(Player::directions::NONE);
     }
+}
+
+void GameScene::spawnWall(const int posX, const int posY)
+{
+    auto wall = std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::WALL), app->getRenderer());
+    wall->setPosition(posX, posY);
+    wall->setSize(32, 32);
+    wall->setClip(0, 0, 32, 32);
+    addObject(wall);
+    std::cout << "Wall spawned" << std::endl;
+}
+
+void GameScene::debug()
+{
+    std::cout << player->getX() << " " << player->getY() << std::endl;
 }

@@ -13,13 +13,12 @@ public:
     MenuScene(App *_app);
     void onEvent(const SDL_Event &event);
     void onActivate();
-
 private:
     std::shared_ptr<Text> startText;
     std::shared_ptr<Text> exitText;
     const SDL_Color default_color = {255, 255, 255, 255};
     const SDL_Color selected = {255, 0, 0, 255};
-    bool startItemSelected = false;
+    bool startItemSelected = true;
 };
 
 #endif // MENUSCENE_H

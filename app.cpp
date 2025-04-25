@@ -1,13 +1,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include <iostream>
 
 #include "app.h"
 #include "scenes/MenuScene.h"
 
-
-const int WINDOW_HEIGHT = 720;
-const int WINDOW_WIDTH = 1280;
 const double FRAME_RATE = 1.0 / 60.0;
 
 App::App()
@@ -25,6 +23,12 @@ App::App()
         return;
     }
 
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+    {
+        std::cout << "IMG_Init Error: " << IMG_GetError() << std::endl;
+        return;
+    }
+
     main_window = SDL_CreateWindow("App", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, window_height, 1);
     if (!main_window)
     {
@@ -33,7 +37,7 @@ App::App()
         return;
     }
 
-    renderer = SDL_CreateRenderer(main_window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(main_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) 
     {
         std::cout << "Failed to create renderer" << std::endl;
@@ -61,6 +65,7 @@ App::~App()
     
     TTF_Quit();
     SDL_Quit();
+    IMG_Quit();
 }
 
 void App::addScene(std::string name, std::shared_ptr<Scene> scene)
@@ -105,7 +110,7 @@ void App::run()
         while (SDL_PollEvent(&event))
         {
             current_scene->onEvent(event);
-            if (event.type == SDL_KEYDOWN) std::cout << "Some key is pressed" << std::endl;
+            // if (event.type == SDL_KEYDOWN) std::cout << "Some key is pressed" << std::endl;
             switch (event.type)
             {
                 case SDL_QUIT:
@@ -123,6 +128,16 @@ void App::run()
         SDL_RenderPresent(renderer);
 
     }
+}
+void App::removeScene(const std::string name)
+{
+    const auto find_scene = scenes_list.find(name);
+    if (find_scene == scenes_list.end() || !find_scene->second)
+    {
+        std::cout << "Scene not found" << std::endl;
+        return;
+    }
+    scenes_list.erase(find_scene);
 }
 
 void App::update(const int delta) 
@@ -158,15 +173,4 @@ int App::getWindowHeight()
 Texture *App::getTextures() const
 {
     return texture;
-}
-
-void App::removeScene(const std::string name)
-{
-    const auto find_scene = scenes_list.find(name);
-    if (find_scene == scenes_list.end() || !find_scene->second)
-    {
-        std::cout << "Scene not found" << std::endl;
-        return;
-    }
-    scenes_list.erase(find_scene);
 }

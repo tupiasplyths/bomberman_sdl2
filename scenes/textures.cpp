@@ -1,4 +1,5 @@
 #include <iostream>
+#include <SDL2/SDL_image.h>
 #include "scenes/textures.h"
 
 void Texture::load(SDL_Renderer *renderer)
@@ -23,7 +24,27 @@ void Texture::loadFont()
 
 void Texture::loadTexture(SDL_Renderer *renderer, texture_name name, const char *filename)
 {
-    textures[name] = std::shared_ptr<SDL_Texture>(IMG_LoadTexture(renderer, filename), SDL_DestroyTexture);
+    // textures[name] = std::shared_ptr<SDL_Texture>(IMG_LoadTexture(renderer, filename), SDL_DestroyTexture);
+    SDL_Surface *surface = IMG_Load(filename);
+    if (!surface)
+    {
+        std::cerr << "Failed to load texture: " << filename << " " << IMG_GetError() << std::endl;
+    }
+    else
+    {
+        textures[name] = std::shared_ptr<SDL_Texture>(SDL_CreateTextureFromSurface(renderer, surface), SDL_DestroyTexture);
+        SDL_FreeSurface(surface);
+        if (!textures[name])
+        {
+            std::cerr << "Failed to load texture: " << filename << " " << IMG_GetError() << std::endl;
+        }
+        else 
+        {
+            std::cout << "Loaded texture: " << filename << std::endl;
+            texture_width = surface->w;
+            texture_height = surface->h;
+        }
+    }
     if (!textures[name])
     {
         std::cerr << "Failed to load texture: " << filename << " " << IMG_GetError() << std::endl;
@@ -37,5 +58,6 @@ std::shared_ptr<TTF_Font> Texture::getFont()
 
 std::shared_ptr<SDL_Texture> Texture::getTexture(texture_name name)
 {
+
     return textures[name];
 }

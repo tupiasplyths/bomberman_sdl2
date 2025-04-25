@@ -6,7 +6,7 @@
 #include <utility>
 #include <vector>
 
-// #include "entities/Text.h"
+#include "entities/Text.h"
 #include "scenes/Scene.h"
 #include "entities/Player.h"
 
@@ -19,6 +19,8 @@ public:
 
 private:
     void spawnPlayer();
+    void spawnWall(const int posX, const int posY);
+    void debug();
     std::shared_ptr<Player> player;
     void exit();
     void updateMovement(const bool keyPressed, const int keycode);

@@ -3,12 +3,12 @@
 
 Player::Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : MovingEntity(texture, renderer)
 {
+    if (!texture) printf("There's no texture\n");
     upAnimation = std::make_shared<Animation>();
     downAnimation = std::make_shared<Animation>();
     leftAnimation = std::make_shared<Animation>();
     rightAnimation = std::make_shared<Animation>();
     deathAnimation = std::make_shared<Animation>();
-    // animation = std::shared_ptr<Animation>[5];
 
     // move up
     upAnimation->addAnimationObject(AnimationObject(0, 0, 32, 48));
@@ -36,16 +36,18 @@ Player::Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : M
     deathAnimation->addAnimationObject(AnimationObject(64, 192, 32, 48));
     deathAnimation->addAnimationObject(AnimationObject(96, 192, 32, 48));
 
-
-    for (auto &anim : animation)
-    {
-        anim.second->setSprite(this);
-    }
     animation[directions::UP] = upAnimation;
     animation[directions::DOWN] = downAnimation;
     animation[directions::LEFT] = leftAnimation;
     animation[directions::RIGHT] = rightAnimation;
-    
+    for (auto &anim : animation)
+    {
+        anim.second->setSprite(this);
+    }
+    addAnimation(animation[directions::UP]);
+    addAnimation(animation[directions::DOWN]);
+    addAnimation(animation[directions::LEFT]);
+    addAnimation(animation[directions::RIGHT]);
 }
 
 void Player::setDirection(directions _direction)
@@ -55,7 +57,8 @@ void Player::setDirection(directions _direction)
     switch (_direction)
     {
     case directions::NONE:
-        animation[direction]->reset();
+        if (lastDirection != directions::NONE)
+            animation[lastDirection]->reset();
         setMoving(false);
         break;
     default:
@@ -106,4 +109,5 @@ void Player::update(const int delta)
             }
         }
     }
+    MovingEntity::update(delta);
 }

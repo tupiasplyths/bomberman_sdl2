@@ -40,18 +40,28 @@ void Animation::reset()
 
 void Animation::update(const int delta)
 {
-    if (!isPlaying || !sprite)
+    if (!isPlaying) return;
+    if (!sprite || animation.size() < 1)
     {
+        printf("sprite not set or too small\n");
         return;
     }
-    time -= delta;
-    if (time <= 0)
+    time += delta;
+    // printf("playing animation\n");
+    if (time >= interval)
     {
-        time = interval;
+        time = 0;
         AnimationObject obj = animation[currentObject];
+        currentObject = (currentObject + 1) % (int)animation.size(); // go to the next frame of the sprites
         sprite->setClip(obj.width, obj.height, obj.positionX, obj.positionY);
         // currentObject++;
-        currentObject = (currentObject + 1) % (int)animation.size(); // go to the next frame of the sprites
     }
 };
 
+AnimationObject::AnimationObject(int positionX, int positionY, int width, int height)
+{
+    this->positionX = positionX;
+    this->positionY = positionY;
+    this->width = width;
+    this->height = height;
+}

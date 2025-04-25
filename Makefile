@@ -60,7 +60,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /home/tupi/Documents/code/bomberman_sdl2
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/tupi/Documents/code/bomberman_sdl2/build
+CMAKE_BINARY_DIR = /home/tupi/Documents/code/bomberman_sdl2
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -132,9 +132,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/tupi/Documents/code/bomberman_sdl2/build/CMakeFiles /home/tupi/Documents/code/bomberman_sdl2/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/tupi/Documents/code/bomberman_sdl2/CMakeFiles /home/tupi/Documents/code/bomberman_sdl2//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/tupi/Documents/code/bomberman_sdl2/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/tupi/Documents/code/bomberman_sdl2/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -318,6 +318,30 @@ entities/Sprite.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Sprite.cpp.s
 .PHONY : entities/Sprite.cpp.s
 
+entities/Text.o: entities/Text.cpp.o
+.PHONY : entities/Text.o
+
+# target to build an object file
+entities/Text.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Text.cpp.o
+.PHONY : entities/Text.cpp.o
+
+entities/Text.i: entities/Text.cpp.i
+.PHONY : entities/Text.i
+
+# target to preprocess a source file
+entities/Text.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Text.cpp.i
+.PHONY : entities/Text.cpp.i
+
+entities/Text.s: entities/Text.cpp.s
+.PHONY : entities/Text.s
+
+# target to generate assembly for a file
+entities/Text.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Text.cpp.s
+.PHONY : entities/Text.cpp.s
+
 game.o: game.cpp.o
 .PHONY : game.o
 
@@ -342,29 +366,77 @@ game.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/game.cpp.s
 .PHONY : game.cpp.s
 
-scene.o: scene.cpp.o
-.PHONY : scene.o
+scenes/MenuScene.o: scenes/MenuScene.cpp.o
+.PHONY : scenes/MenuScene.o
 
 # target to build an object file
-scene.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scene.cpp.o
-.PHONY : scene.cpp.o
+scenes/MenuScene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/MenuScene.cpp.o
+.PHONY : scenes/MenuScene.cpp.o
 
-scene.i: scene.cpp.i
-.PHONY : scene.i
+scenes/MenuScene.i: scenes/MenuScene.cpp.i
+.PHONY : scenes/MenuScene.i
 
 # target to preprocess a source file
-scene.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scene.cpp.i
-.PHONY : scene.cpp.i
+scenes/MenuScene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/MenuScene.cpp.i
+.PHONY : scenes/MenuScene.cpp.i
 
-scene.s: scene.cpp.s
-.PHONY : scene.s
+scenes/MenuScene.s: scenes/MenuScene.cpp.s
+.PHONY : scenes/MenuScene.s
 
 # target to generate assembly for a file
-scene.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scene.cpp.s
-.PHONY : scene.cpp.s
+scenes/MenuScene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/MenuScene.cpp.s
+.PHONY : scenes/MenuScene.cpp.s
+
+scenes/Scene.o: scenes/Scene.cpp.o
+.PHONY : scenes/Scene.o
+
+# target to build an object file
+scenes/Scene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/Scene.cpp.o
+.PHONY : scenes/Scene.cpp.o
+
+scenes/Scene.i: scenes/Scene.cpp.i
+.PHONY : scenes/Scene.i
+
+# target to preprocess a source file
+scenes/Scene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/Scene.cpp.i
+.PHONY : scenes/Scene.cpp.i
+
+scenes/Scene.s: scenes/Scene.cpp.s
+.PHONY : scenes/Scene.s
+
+# target to generate assembly for a file
+scenes/Scene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/Scene.cpp.s
+.PHONY : scenes/Scene.cpp.s
+
+scenes/textures.o: scenes/textures.cpp.o
+.PHONY : scenes/textures.o
+
+# target to build an object file
+scenes/textures.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/textures.cpp.o
+.PHONY : scenes/textures.cpp.o
+
+scenes/textures.i: scenes/textures.cpp.i
+.PHONY : scenes/textures.i
+
+# target to preprocess a source file
+scenes/textures.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/textures.cpp.i
+.PHONY : scenes/textures.cpp.i
+
+scenes/textures.s: scenes/textures.cpp.s
+.PHONY : scenes/textures.s
+
+# target to generate assembly for a file
+scenes/textures.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/textures.cpp.s
+.PHONY : scenes/textures.cpp.s
 
 # Help Target
 help:
@@ -397,12 +469,21 @@ help:
 	@echo "... entities/Sprite.o"
 	@echo "... entities/Sprite.i"
 	@echo "... entities/Sprite.s"
+	@echo "... entities/Text.o"
+	@echo "... entities/Text.i"
+	@echo "... entities/Text.s"
 	@echo "... game.o"
 	@echo "... game.i"
 	@echo "... game.s"
-	@echo "... scene.o"
-	@echo "... scene.i"
-	@echo "... scene.s"
+	@echo "... scenes/MenuScene.o"
+	@echo "... scenes/MenuScene.i"
+	@echo "... scenes/MenuScene.s"
+	@echo "... scenes/Scene.o"
+	@echo "... scenes/Scene.i"
+	@echo "... scenes/Scene.s"
+	@echo "... scenes/textures.o"
+	@echo "... scenes/textures.i"
+	@echo "... scenes/textures.s"
 .PHONY : help
 
 

@@ -22,6 +22,8 @@ GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
     text->setSize(app->getWindowWidth() / 16, app->getWindowHeight() / 80);
     text->setPosition(0, app->getWindowHeight() - text->getHeight());
     addObject(text);
+
+    app->addScene("gameover", std::make_shared<GameOverScene>(app, "gameover"));
     // std::shared_ptr<SDL_Texture> tmp = app->getTextures()->getTexture(Texture::texture_name::WALL);
     // std::cout << tmp << std::endl;
     // std::shared_ptr<Sprite> wall1 = std::make_shared<Sprite>(tmp, app->getRenderer());
@@ -56,6 +58,12 @@ void GameScene::update(const int delta)
     updatePlayerCollision();
     updateEnemiesCollision();
     updateExplosionsCollision();
+    if (player->getDead())
+    {
+        app->activateScene("gameover");
+        // app->activateScene("menu");
+        app->removeScene("game");
+    }
 }
 
 void GameScene::updateTimers(const int delta)
@@ -124,6 +132,7 @@ void GameScene::updatePlayerCollision()
     {
         if (checkCollision(playerRect, collisionObject.second->getRect()))
         {
+            std::cout << "Collided with something" << std::endl;
             player->revertLastMove();
         }
     }
@@ -241,9 +250,10 @@ void GameScene::updateExplosionsCollision()
             playerRect.h = static_cast<int>(playerRect.h * 0.2f);
             if (checkCollision(playerRect, explosion->getRect()))
             {
+                player->setDead();
                 removeObject(player);
                 player = nullptr;
-                exit();
+                // exit();
             }
         }
     }
@@ -280,6 +290,8 @@ void GameScene::spawnBalloom(const int posX, const int posY)
     balloom->setClip(32, 32, 0, 0);
     addObject(balloom);
     enemies.push_back(balloom);
+    std::cout << "Balloom spawned" << std::endl;
+    std::cout << "Enemies count: " << enemies.size() << std::endl;
 }
 
 void GameScene::spawnBomb(Object *object)
@@ -303,7 +315,7 @@ void GameScene::spawnBomb(Object *object)
     bomb->setPosition(bombX, bombY);
     bomb->setSize(32, 32);
     insertObject(bomb, backgroundCount);
-
+    
     auto animation = std::make_shared<Animation>();
     animation->addAnimationObject(AnimationObject(0, 0, 32, 32));
     animation->addAnimationObject(AnimationObject(32, 0, 32, 32));
@@ -326,14 +338,7 @@ void GameScene::spawnBomb(Object *object)
 void GameScene::onEvent(const SDL_Event &event)
 {
     Scene::onEvent(event);
-    if (player->getDead())
-    {
-        // app->addScene("gameover", std:: make_shared<GameOverScene>(app, "gameover"));
-        // app->activateScene("gameover");
-        app->activateScene("menu");
-        app->removeScene("game");
-        return;
-    }
+    
     if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.repeat == 0)
     {
         updateMovement(event.type == SDL_KEYDOWN? true : false, event.key.keysym.scancode);
@@ -508,7 +513,7 @@ void GameScene::generateMap()
                 spawnGrass(x * 32, y * 32);
                 break;
             case ' ':
-                // x--;
+            case '\n':
                 break;
             default:
                 std::cout << "Unknown character in map file: " << line[x] << std::endl;

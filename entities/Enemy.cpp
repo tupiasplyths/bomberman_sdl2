@@ -131,7 +131,6 @@ void Enemy::generateNewPath()
 {
     if (isDead)
         return;
-    // create random func
     const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     auto randPath = std::bind(std::uniform_int_distribution<int>(1, 10),
                               std::mt19937(static_cast<unsigned int>(seed)));

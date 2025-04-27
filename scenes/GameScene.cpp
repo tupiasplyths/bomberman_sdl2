@@ -28,9 +28,9 @@ GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
     spawnPlayer();
     generateEnemies();
 
-    Object testObj = Object(app->getRenderer());
-    testObj.setPosition(128, 320);
-    spawnPortal(&testObj);
+    // Object testObj = Object(app->getRenderer());
+    // testObj.setPosition(128, 320);
+    // spawnPortal(&testObj);
 }
 
 void GameScene::update(const int delta)

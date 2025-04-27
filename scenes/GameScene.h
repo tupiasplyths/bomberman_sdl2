@@ -50,6 +50,7 @@ private:
     void updateEnemiesCollision();
     void updateExplosionsCollision();
     void destroyBrick(std::shared_ptr<Object> object);
+    void updatePlayerDeath(const int delta);
     // void debug();
     int playerStartPosX = 0;
     int playerStartPosY = 0;
@@ -63,6 +64,7 @@ private:
     int backgroundCount = 0;
     int bombTimer = 0;
     int explosionTimer = 0;
+    int playerDeathTimer = 750;
 };
 
 #endif // GAMESCENE_H

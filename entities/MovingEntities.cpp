@@ -11,12 +11,12 @@ bool MovingEntity::isMoving() const
 
 void MovingEntity::setDead()
 {
+    moving = false;
     isDead = true;
 }
 
 bool MovingEntity::getDead()
 {
-    moving = false;
     return isDead;
 }
 

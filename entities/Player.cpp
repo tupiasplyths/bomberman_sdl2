@@ -4,10 +4,10 @@
 Player::Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : MovingEntity(texture, renderer)
 {
     if (!texture) printf("There's no texture\n");
-    upAnimation = std::make_shared<Animation>();
-    downAnimation = std::make_shared<Animation>();
-    leftAnimation = std::make_shared<Animation>();
-    rightAnimation = std::make_shared<Animation>();
+    std::shared_ptr<Animation> upAnimation = std::make_shared<Animation>();
+    std::shared_ptr<Animation> downAnimation = std::make_shared<Animation>();
+    std::shared_ptr<Animation> leftAnimation = std::make_shared<Animation>();
+    std::shared_ptr<Animation> rightAnimation = std::make_shared<Animation>();
     deathAnimation = std::make_shared<Animation>();
 
     // move up
@@ -48,10 +48,16 @@ Player::Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : M
     addAnimation(animation[directions::DOWN]);
     addAnimation(animation[directions::LEFT]);
     addAnimation(animation[directions::RIGHT]);
+
+    upAnimation = nullptr;
+    downAnimation = nullptr;
+    leftAnimation = nullptr;
+    rightAnimation = nullptr;
 }
 
 void Player::setDirection(directions _direction)
 {
+    if (isDead) return;
     // printf("%d\n", _direction);
     direction = _direction;
     setMoving(true);
@@ -89,6 +95,7 @@ bool Player::isMovingHorizontal()
 
 void Player::update(const int delta)
 {   
+    if (isDead) return;
     if (isMoving())
     {
         const int moveDistance = speed * delta * getWidth();
@@ -96,7 +103,6 @@ void Player::update(const int delta)
         prevY = moveDistance * (isMovingVertical() ? (direction == directions::UP ? -1 : 1) : 0);
         if (isMovingVertical())
         {
-            printf("moving vertical\n");
             if (direction == directions::UP)
             {
                 setPosition(getX(), getY() - moveDistance);
@@ -108,7 +114,6 @@ void Player::update(const int delta)
         }
         else
         {
-            printf("moving horizontal\n");
             if (direction == directions::LEFT)
             {
                 setPosition(getX() - moveDistance, getY());
@@ -120,4 +125,9 @@ void Player::update(const int delta)
         }
     }
     MovingEntity::update(delta);
+}
+
+void Player::playDeathAnimation()
+{
+    deathAnimation->play();
 }

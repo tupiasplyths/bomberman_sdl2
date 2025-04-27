@@ -36,33 +36,26 @@ void GameScene::update(const int delta)
     updatePlayerCollision();
     updateEnemiesCollision();
     updateExplosionsCollision();
-    if (player->getDead())
-    {
-        app->activateScene("gameover");
-        app->removeScene("game");
-    }
+    
 }
 
 void GameScene::onEvent(const SDL_Event &event)
 {
     Scene::onEvent(event);
 
-    if (event.type == SDL_KEYDOWN)
-    {
-        switch (event.key.keysym.scancode)
-        {
-        case SDL_SCANCODE_ESCAPE:
-            exit();
-            break;
-        case SDL_SCANCODE_BACKSLASH:
-            // debug();
-            break;
-        }
-    }
 
     if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.repeat == 0)
     {
         updateMovement(event.type == SDL_KEYDOWN ? true : false, event.key.keysym.scancode);
+    }
+
+    if (event.type == SDL_KEYDOWN)
+    {
+        // we should go to main menu by Escape key
+        if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+        {
+            exit();
+        }
     }
 }
 
@@ -76,6 +69,12 @@ void GameScene::updateTimers(const int delta)
     if (explosions.size() > 0)
     {
         updateExplosionTimer(delta);
+    }
+
+    if (player->getDead())
+    {
+        std::cout <<  "Player is dead" << std::endl;
+        updatePlayerDeath(delta);
     }
 }
 
@@ -137,8 +136,7 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
             if (player->getDead())
                 return;
             spawnBomb(player.get());
-            break;
-
+            break;  
         default:
             break;
         }
@@ -149,6 +147,8 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
         player->setDirection(Player::directions::NONE);
     }
 }
+
+
 
 void GameScene::updateExplosionTimer(const int delta)
 {
@@ -174,7 +174,7 @@ void GameScene::updateExplosionTimer(const int delta)
 
 void GameScene::updatePlayerCollision()
 {
-    if (player == nullptr)
+    if (player == nullptr || player->getDead())
     {
         return;
     }
@@ -183,11 +183,11 @@ void GameScene::updatePlayerCollision()
         return;
     }
     SDL_Rect playerRect = player->getRect();
-    playerRect.w = static_cast<int>(playerRect.w * 0.7);
-    playerRect.h = static_cast<int>(playerRect.h * 0.7);
+    playerRect.y += playerRect.h / 4;
+    playerRect.x += playerRect.w / 4;
+    playerRect.w = static_cast<int>(playerRect.w * 0.5);
+    playerRect.h = static_cast<int>(playerRect.h * 0.5);
     // Move hitbox to bottom of player
-    playerRect.y += playerRect.h / 2;
-    playerRect.x += playerRect.w / 2;
     for (const auto &collisionObject : collisions)
     {
         if (checkCollision(playerRect, collisionObject.second->getRect()))
@@ -205,6 +205,23 @@ void GameScene::updatePlayerCollision()
                 std::cout << "You win!" << std::endl;
             }
         }
+    }
+}
+
+void GameScene::updatePlayerDeath(const int delta)
+{
+    if (playerDeathTimer <= 0)
+    {
+        removeObject(player);
+        player = nullptr;
+
+        app->activateScene("gameover");
+        app->removeScene("game");
+    }
+    else
+    {
+        playerDeathTimer -= delta;
+        player->playDeathAnimation();
     }
 }
 
@@ -236,14 +253,15 @@ void GameScene::updateEnemiesCollision()
         {
             // smaller hit box for player
             SDL_Rect playerRect = player->getRect();
+            playerRect.y += playerRect.h / 2;
+            playerRect.x += playerRect.w / 2;
             playerRect.w = static_cast<int>(playerRect.w * 0.2);
             playerRect.h = static_cast<int>(playerRect.h * 0.2);
             if (checkCollision(playerRect, enemy->getRect()))
             {
                 // player killed by enemy
                 std::cout << "Player killed by enemy" << std::endl;
-                removeObject(player);
-                player = nullptr;
+                player->setDead();
                 exit();
             }
         }
@@ -277,8 +295,8 @@ void GameScene::updateExplosionsCollision()
         while (itEnemies != enemies.end())
         {
             SDL_Rect enemyRect = (*itEnemies)->getRect();
-            enemyRect.w = static_cast<int>(enemyRect.w * 0.2);
-            enemyRect.h = static_cast<int>(enemyRect.h * 0.2);
+            enemyRect.w = static_cast<int>(enemyRect.w * 0.3);
+            enemyRect.h = static_cast<int>(enemyRect.h * 0.3);
             if (checkCollision(enemyRect, explosion->getRect()))
             {
                 removeObject(*itEnemies);
@@ -293,15 +311,18 @@ void GameScene::updateExplosionsCollision()
         if (player != nullptr)
         {
             SDL_Rect playerRect = player->getRect();
+            playerRect.y += playerRect.h / 2;
+            playerRect.x += playerRect.w / 2;
             playerRect.w = static_cast<int>(playerRect.w * 0.2f);
             playerRect.h = static_cast<int>(playerRect.h * 0.2f);
+
             if (checkCollision(playerRect, explosion->getRect()))
             {
                 std::cout << "Player exploded" << std::endl;
+                // removeObject(player);
                 player->setDead();
-                removeObject(player);
-                player = nullptr;
-                exit();
+                // player = nullptr;
+                // exit();
             }
         }
     }
@@ -449,7 +470,7 @@ void GameScene::spawnExplosion(Object *object)
         animation->play();
     }
     // update timer
-    explosionTimer = 800;
+    explosionTimer = 600;
 }
 
 // void GameScene::debug()
@@ -552,10 +573,10 @@ void GameScene::destroyBrick(std::shared_ptr<Object> brick)
                                          { return collision.first == Tile::Brick; });
         // random for door spawn
         const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-        auto randDoor = std::bind(std::uniform_int_distribution<int>(0, 6),
+        auto randDoor = std::bind(std::uniform_int_distribution<int>(0, 4),
                                   std::mt19937(static_cast<unsigned int>(seed)));
         // spawn door if we can
-        if (randDoor() == 0 || bricksCount <= 1)
+        if (randDoor() == 0 || bricksCount <= 3)
         {
             spawnPortal(brick.get());
         }

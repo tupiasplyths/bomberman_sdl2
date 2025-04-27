@@ -24,7 +24,7 @@ void Animation::play()
     }
     isPlaying = true;
     time = interval;
-};
+}
 
 void Animation::stop()
 {

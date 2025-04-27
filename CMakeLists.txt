@@ -49,6 +49,7 @@ set (
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/MenuScene.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/GameScene.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/GameOverScene.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scenes/WinScene.cpp
 )
 
 add_executable(bomberman ${SOURCES})

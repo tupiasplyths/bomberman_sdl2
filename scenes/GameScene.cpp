@@ -14,11 +14,13 @@
 #include "scenes/GameScene.h"
 #include "entities/Enemy.h"
 #include "scenes/GameOverScene.h"
+#include "scenes/WinScene.h"
 #include "app.h"
 
 GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
 {
     app->addScene("gameover", std::make_shared<GameOverScene>(app, "gameover"));
+    app->addScene("win", std::make_shared<WinScene>(app, "win"));
     auto text = std::make_shared<Text>(app->getTextures()->getFont(), "GameScene", app->getRenderer());
     text->setSize(app->getWindowWidth() / 16, app->getWindowHeight() / 80);
     text->setPosition(0, app->getWindowHeight() - text->getHeight());
@@ -28,9 +30,6 @@ GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
     spawnPlayer();
     generateEnemies();
 
-    // Object testObj = Object(app->getRenderer());
-    // testObj.setPosition(128, 320);
-    // spawnPortal(&testObj);
 }
 
 void GameScene::update(const int delta)
@@ -198,6 +197,7 @@ void GameScene::updatePlayerCollision()
         {
             if (enemies.size() == 0)
             {
+                app->activateScene("win");
                 std::cout << "You win!" << std::endl;
             }
         }
@@ -376,8 +376,8 @@ void GameScene::spawnBalloom(const int posX, const int posY)
     balloom->setClip(32, 32, 0, 0);
     addObject(balloom);
     enemies.push_back(balloom);
-    std::cout << "Balloom spawned at" << balloom->getX() << ", " <<  balloom->getY() << std::endl;
-    std::cout << "Enemies count: " << enemies.size() << std::endl;
+    // std::cout << "Balloom spawned at" << balloom->getX() << ", " <<  balloom->getY() << std::endl;
+    // std::cout << "Enemies count: " << enemies.size() << std::endl;
 }
 
 void GameScene::spawnPortal(Object *object)
@@ -385,9 +385,11 @@ void GameScene::spawnPortal(Object *object)
     portal =
         std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::PORTAL), app->getRenderer());
     portal->setSize(32, 32);
+    portal->setClip(32, 32, 0, 0);
+    // std::cout << portal->hasTexture() << std::endl;
     portal->setPosition(object->getX(), object->getY());
-    insertObject(portal, ++backgroundCount);
-    std::cout << "Portal spawned" << std::endl;
+    insertObject(portal, backgroundCount);
+    std::cout << "Portal spawned at " << portal->getX() << " " << portal->getY() << std::endl;
 }
 
 void GameScene::spawnGrass(const int posX, const int posY)
@@ -533,7 +535,7 @@ void GameScene::generateMap()
 void GameScene::generateEnemies()
 {
     // we need enemy in random tile
-    auto randCount = std::bind(std::uniform_int_distribution<int>(3, 5),
+    auto randCount = std::bind(std::uniform_int_distribution<int>(2, 4),
                                std::mt19937(static_cast<unsigned int>(getSeed())));
     auto randType = std::bind(std::uniform_int_distribution<int>(0, 1),
                               std::mt19937(static_cast<unsigned int>(getSeed())));
@@ -556,7 +558,7 @@ void GameScene::generateEnemies()
         }
         // spawn enemy
         printf("X:  %d, Y: %d\n", cellX, cellY);
-        std::cout << as_integer(gameMap[cellX][cellY]) << std::endl;
+        // std::cout << as_integer(gameMap[cellX][cellY]) << std::endl;
         spawnBalloom(cellX * 32, cellY * 32);
     }
 }

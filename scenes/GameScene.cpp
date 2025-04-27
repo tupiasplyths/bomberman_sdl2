@@ -27,6 +27,10 @@ GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
     generateMap();
     spawnPlayer();
     generateEnemies();
+
+    Object testObj = Object(app->getRenderer());
+    testObj.setPosition(128, 320);
+    spawnPortal(&testObj);
 }
 
 void GameScene::update(const int delta)
@@ -56,6 +60,10 @@ void GameScene::onEvent(const SDL_Event &event)
         {
             exit();
         }
+        if (event.key.keysym.scancode == SDL_SCANCODE_BACKSLASH)
+        {
+            debug();
+        }
     }
 }
 
@@ -73,7 +81,7 @@ void GameScene::updateTimers(const int delta)
 
     if (player->getDead() && explosionTimer < 200)
     {
-        std::cout <<  "Player is dead" << std::endl;
+        // std::cout <<  "Player is dead" << std::endl;
         updatePlayerDeath(delta);
     }
 }
@@ -221,11 +229,17 @@ void GameScene::updateEnemiesCollision()
         // iterate drawables for collision
         for (const auto &collisionObject : collisions)
         {
+            auto enemyRect = enemy->getRect();
+            enemyRect.y += enemyRect.h / 4;
+            enemyRect.x += enemyRect.w / 4;
+            enemyRect.w = static_cast<int>(enemyRect.w * 0.7);
+            enemyRect.h = static_cast<int>(enemyRect.h * 0.7);
             // check for block collision
-            if (checkCollision(enemy->getRect(), collisionObject.second->getRect()))
+            if (checkCollision(enemyRect, collisionObject.second->getRect()))
             {
                 // stop moving on collision detection
                 enemy->setMoving(false);
+                // std::cout << "enemy hit something" << std::endl;
                 enemy->revertLastMove();
             }
         }
@@ -296,7 +310,7 @@ void GameScene::updateExplosionsCollision()
             ++itEnemies;
         }
         // check player
-        if (player != nullptr)
+        if (player != nullptr && !player->getDead())
         {
             SDL_Rect playerRect = player->getRect();
             playerRect.y += playerRect.h / 2;
@@ -362,7 +376,7 @@ void GameScene::spawnBalloom(const int posX, const int posY)
     balloom->setClip(32, 32, 0, 0);
     addObject(balloom);
     enemies.push_back(balloom);
-    std::cout << "Balloom spawned" << std::endl;
+    std::cout << "Balloom spawned at" << balloom->getX() << ", " <<  balloom->getY() << std::endl;
     std::cout << "Enemies count: " << enemies.size() << std::endl;
 }
 
@@ -372,7 +386,8 @@ void GameScene::spawnPortal(Object *object)
         std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::PORTAL), app->getRenderer());
     portal->setSize(32, 32);
     portal->setPosition(object->getX(), object->getY());
-    insertObject(portal, backgroundCount);
+    insertObject(portal, ++backgroundCount);
+    std::cout << "Portal spawned" << std::endl;
 }
 
 void GameScene::spawnGrass(const int posX, const int posY)
@@ -461,11 +476,6 @@ void GameScene::spawnExplosion(Object *object)
     explosionTimer = 600;
 }
 
-// void GameScene::debug()
-// {
-//     std::cout << player->getX() << " " << player->getY() << std::endl;
-// }
-
 void GameScene::generateMap()
 {
     std::ifstream file("assets/textures/maps/Level1.txt");
@@ -523,28 +533,30 @@ void GameScene::generateMap()
 void GameScene::generateEnemies()
 {
     // we need enemy in random tile
-    const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-    auto randCount = std::bind(std::uniform_int_distribution<int>(3, 6),
-                               std::mt19937(static_cast<unsigned int>(seed)));
+    auto randCount = std::bind(std::uniform_int_distribution<int>(3, 5),
+                               std::mt19937(static_cast<unsigned int>(getSeed())));
     auto randType = std::bind(std::uniform_int_distribution<int>(0, 1),
-                              std::mt19937(static_cast<unsigned int>(seed)));
+                              std::mt19937(static_cast<unsigned int>(getSeed())));
     auto randCellX = std::bind(std::uniform_int_distribution<int>(0, 16 - 1),
-                               std::mt19937(static_cast<unsigned int>(seed)));
+                               std::mt19937(static_cast<unsigned int>(getSeed())));
     auto randCellY = std::bind(std::uniform_int_distribution<int>(0, 16 - 1),
-                               std::mt19937(static_cast<unsigned int>(seed)));
+                               std::mt19937(static_cast<unsigned int>(getSeed())));
     // start enemies spawn
     for (int i = 0; i < randCount(); i++)
     {
         // loop random x, y until Tile is not Brick, Wall or EmptyGrass
         int cellX = randCellX();
         int cellY = randCellY();
-        while (gameMap[cellX][cellY] == Tile::Brick || gameMap[cellX][cellY] == Tile::Wall ||
-               gameMap[cellX][cellY] == Tile::EmptyGrass)
+        while (gameMap[cellX][cellY] == Tile::Brick || gameMap[cellX][cellY] == Tile::Wall
+               //    || gameMap[cellX][cellY] == Tile::
+        )
         {
             cellX = randCellX();
             cellY = randCellY();
         }
         // spawn enemy
+        printf("X:  %d, Y: %d\n", cellX, cellY);
+        std::cout << as_integer(gameMap[cellX][cellY]) << std::endl;
         spawnBalloom(cellX * 32, cellY * 32);
     }
 }
@@ -583,6 +595,12 @@ bool GameScene::checkCollision(const SDL_Rect &rect1, const SDL_Rect &rect2) con
     return SDL_HasIntersection(&rect1, &rect2);
 }
 
+unsigned int GameScene::getSeed()
+{
+    return static_cast<unsigned int>(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+}
+
+
 void GameScene::exit()
 {
     // app->activateScene("menu");
@@ -590,3 +608,15 @@ void GameScene::exit()
     app->removeScene("game");
     std::cout << "Game scene exited" << std::endl;
 }
+
+void GameScene::debug()
+{
+    int i = 0;
+    for (auto &enemy : enemies)
+    {
+        std::cout << "Enemy " << i << " at: " << enemy->getX() << ", " << enemy->getY() << std::endl;
+        std::cout << "new: " << enemy->newX << ", " << enemy->newY << std::endl;
+        i++;
+    }
+}
+

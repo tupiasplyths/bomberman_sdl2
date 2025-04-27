@@ -35,7 +35,7 @@ void Enemy::moveTo(const int x, const int y)
     {
         setFlip(SDL_FLIP_HORIZONTAL);
     }
-    else
+    else if (x > 0)
     {
         setFlip(SDL_FLIP_NONE);
     }
@@ -43,6 +43,7 @@ void Enemy::moveTo(const int x, const int y)
 
 void Enemy::moveToCell(std::pair<int, int> pathToCell)
 {
+    // printf("Moving to cell %d, %d\n", pathToCell.first, pathToCell.second);
     path = pathToCell;
     movingToCell = true;
 
@@ -58,54 +59,33 @@ bool Enemy::isMovingToCell() const
 void Enemy::updateMovement(const int delta)
 {
     if (isDead)
+    {
         return;
-
+    }
+    // X < new X => sign = -1 => distance is > 0
     const int diffX = getX() - newX;
     const int diffY = getY() - newY;
-    int signX;
-    int signY;
-
-    
-    if (diffX == 0)
-    {
-        signX = 0;
-    }
-    else if (diffX > 0)
-    {
-        signX = 1;
-    }
-    else
-    {
-        signX = -1;
-    }
-
-    if (diffY == 0)
-    {
-        signY = 0;
-    }
-    else if (diffY > 0)
-    {
-        signY = 1;
-    }
-    else
-    {
-        signY = -1;
-    }
+    const int signX = (diffX > 0) ? 1 : ((diffX < 0) ? -1 : 0);
+    const int signY = (diffY > 0) ? 1 : ((diffY < 0) ? -1 : 0);
 
     const int distance = floor(baseSpeed * delta * getWidth());
     prevX = distance * -signX;
     prevY = distance * -signY;
-
-    if (newX * signX <= distance && newY * signY <= distance)
+    // printf("%d %d\n", signX, signY);
+    if (abs(diffX) <= distance && abs(diffY) <= distance)
     {
+        // printf("reached\n");
         movement->stop();
         setMoving(false);
         movingToCell = false;
         setPosition(newX, newY);
         return;
     }
+    int desX = getX() - int(floor(distance) * signX);
+    int desY = getY() - int(floor(distance) * signY);
 
-    setPosition(getX() - int(floor(distance) * signX), getY() - int(floor(distance) * signY));
+    // printf("des:%d %d prev:%d %d\n", desX, desY, signX, signY);
+    setPosition(desX, desY);
 }
 
 void Enemy::update(const int delta)
@@ -131,17 +111,19 @@ void Enemy::update(const int delta)
     }
 }
 
+unsigned int Enemy::getSeed()
+{
+    return static_cast<unsigned int>(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+}
+
 void Enemy::generateNewPath()
 {
     if (isDead)
         return;
-    const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-    auto randPath = std::bind(std::uniform_int_distribution<int>(1, 10),
-                              std::mt19937(static_cast<unsigned int>(seed)));
+    auto randPath = std::bind(std::uniform_int_distribution<int>(1, 5),
+                              std::mt19937(static_cast<unsigned int>(getSeed())));
     auto randSign = std::bind(std::uniform_int_distribution<int>(-1, 1),
-                              std::mt19937(static_cast<unsigned int>(seed)));
-
-    // generate direction and cells
+                              std::mt19937(static_cast<unsigned int>(getSeed())));
     const int randUpDown = randPath();
     const int randUpDownSign = randSign();
     if (randUpDownSign != 0)

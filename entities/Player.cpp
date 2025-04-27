@@ -10,27 +10,27 @@ Player::Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : M
     std::shared_ptr<Animation> rightAnimation = std::make_shared<Animation>();
     deathAnimation = std::make_shared<Animation>();
 
-    // move up
+
     upAnimation->addAnimationObject(AnimationObject(0, 0, 32, 48));
     upAnimation->addAnimationObject(AnimationObject(32, 0, 32, 48));
     upAnimation->addAnimationObject(AnimationObject(64, 0, 32, 48));
     upAnimation->addAnimationObject(AnimationObject(96, 0, 32, 48));
-    // move down
+
     downAnimation->addAnimationObject(AnimationObject(0, 48, 32, 48));
     downAnimation->addAnimationObject(AnimationObject(32, 48, 32, 48));
     downAnimation->addAnimationObject(AnimationObject(64, 48, 32, 48));
     downAnimation->addAnimationObject(AnimationObject(96, 48, 32, 48));
-    // move left
+
     leftAnimation->addAnimationObject(AnimationObject(0, 96, 32, 48));
     leftAnimation->addAnimationObject(AnimationObject(32, 96, 32, 48));
     leftAnimation->addAnimationObject(AnimationObject(64, 96, 32, 48));
     leftAnimation->addAnimationObject(AnimationObject(96, 96, 32, 48));
-    // move right
+
     rightAnimation->addAnimationObject(AnimationObject(0, 144, 32, 48));
     rightAnimation->addAnimationObject(AnimationObject(32, 144, 32, 48));
     rightAnimation->addAnimationObject(AnimationObject(64, 144, 32, 48));
     rightAnimation->addAnimationObject(AnimationObject(96, 144, 32, 48));
-    // die
+
     deathAnimation->addAnimationObject(AnimationObject(0, 192, 32, 48));
     deathAnimation->addAnimationObject(AnimationObject(32, 192, 32, 48));
     deathAnimation->addAnimationObject(AnimationObject(64, 192, 32, 48));
@@ -59,8 +59,6 @@ Player::Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : M
 
 void Player::setDirection(directions _direction)
 {
-    
-    // printf("%d\n", _direction);
     direction = _direction;
     setMoving(true);
     switch (_direction)
@@ -131,9 +129,3 @@ void Player::update(const int delta)
     }
     MovingEntity::update(delta);
 }
-
-// void Player::playDeathAnimation()
-// {
-//     printf("Playing death animation\n");
-//     deathAnimation->play();
-// }

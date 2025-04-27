@@ -27,7 +27,6 @@ public:
     Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer);
     void setDirection(directions direction);
     virtual void update(const int delta) override;
-    // void playDeathAnimation();
 
 private:
     directions direction = directions::NONE;

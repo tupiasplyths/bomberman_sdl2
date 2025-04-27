@@ -44,10 +44,12 @@ Player::Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : M
     {
         anim.second->setSprite(this);
     }
+    deathAnimation->setSprite(this);
     addAnimation(animation[directions::UP]);
     addAnimation(animation[directions::DOWN]);
     addAnimation(animation[directions::LEFT]);
     addAnimation(animation[directions::RIGHT]);
+    addAnimation(deathAnimation);
 
     upAnimation = nullptr;
     downAnimation = nullptr;
@@ -57,7 +59,7 @@ Player::Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : M
 
 void Player::setDirection(directions _direction)
 {
-    if (isDead) return;
+    
     // printf("%d\n", _direction);
     direction = _direction;
     setMoving(true);
@@ -94,8 +96,11 @@ bool Player::isMovingHorizontal()
 }
 
 void Player::update(const int delta)
-{   
-    if (isDead) return;
+{
+    if (isDead)
+    {
+        deathAnimation->play();
+    }
     if (isMoving())
     {
         const int moveDistance = speed * delta * getWidth();
@@ -127,7 +132,8 @@ void Player::update(const int delta)
     MovingEntity::update(delta);
 }
 
-void Player::playDeathAnimation()
-{
-    deathAnimation->play();
-}
+// void Player::playDeathAnimation()
+// {
+//     printf("Playing death animation\n");
+//     deathAnimation->play();
+// }

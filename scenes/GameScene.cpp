@@ -71,7 +71,7 @@ void GameScene::updateTimers(const int delta)
         updateExplosionTimer(delta);
     }
 
-    if (player->getDead())
+    if (player->getDead() && explosionTimer < 200)
     {
         std::cout <<  "Player is dead" << std::endl;
         updatePlayerDeath(delta);
@@ -96,17 +96,6 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
 {
     if (player == nullptr)
         return;
-
-    // for (auto &enemy : enemies)
-    // {
-    //     if (checkCollision(player->getRect(), enemy->getRect()))
-    //     {
-    //         std::cout << "Player hit by enemy" << std::endl;
-    //         player->setDead();
-    //         player->setDirection(Player::directions::NONE);
-    //         return;
-    //     }
-    // }
 
     if (keyPressed)
     {
@@ -143,7 +132,6 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
     }
     else
     {
-        std::cout << "stopped" << std::endl;
         player->setDirection(Player::directions::NONE);
     }
 }
@@ -192,7 +180,7 @@ void GameScene::updatePlayerCollision()
     {
         if (checkCollision(playerRect, collisionObject.second->getRect()))
         {
-            std::cout << "Collided with something" << std::endl;
+            // std::cout << "Collided with something" << std::endl;
             player->revertLastMove();
         }
     }
@@ -221,7 +209,7 @@ void GameScene::updatePlayerDeath(const int delta)
     else
     {
         playerDeathTimer -= delta;
-        player->playDeathAnimation();
+        // player->playDeathAnimation();
     }
 }
 

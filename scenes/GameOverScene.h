@@ -17,7 +17,7 @@ public:
 
 private:
     int untilNextSceneTimer = 0;
-    int sceneTimer = 2500;
+    int sceneTimer = 1700;
     std::shared_ptr<Text> text;
     const SDL_Color default_color = {255, 255, 255, 255};
 };

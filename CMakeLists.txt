@@ -60,16 +60,18 @@ add_executable(bomberman ${SOURCES})
 #     ${SDL2_IMAGE_LIBRARY}
 # )
 
-#target_link_libraries(
-#    bomberman
-#    SDL2::SDL2main
-#    SDL2::SDL2
-#    SDL2_ttf::SDL2_ttf
-#    SDL2_image::SDL2_image
-#    -static
-#)
+# for windows
+target_link_libraries(
+   bomberman
+   SDL2::SDL2main
+   SDL2::SDL2
+   SDL2_ttf::SDL2_ttf
+   SDL2_image::SDL2_image
+   -static
+)
 
-target_link_libraries(bomberman ${SDL2_LIBRARIES} -lSDL2_ttf -lSDL2_image)
+# for linux
+# target_link_libraries(bomberman ${SDL2_LIBRARIES} -lSDL2_ttf -lSDL2_image)
 
 install(TARGETS bomberman
     RUNTIME DESTINATION .

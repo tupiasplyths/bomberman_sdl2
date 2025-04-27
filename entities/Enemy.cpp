@@ -64,6 +64,8 @@ void Enemy::updateMovement(const int delta)
     const int diffY = getY() - newY;
     int signX;
     int signY;
+
+    
     if (diffX == 0)
     {
         signX = 0;
@@ -109,9 +111,11 @@ void Enemy::updateMovement(const int delta)
 void Enemy::update(const int delta)
 {
     MovingEntity::update(delta);
-    if (isDead)
+    if (isDead && deathAnimationTimer < 1000)
     {
+        deathAnimationTimer += delta;
         death->play();
+        return;
     }
     if (isMoving())
     {

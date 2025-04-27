@@ -16,10 +16,12 @@ void MovingEntity::setDead()
 
 bool MovingEntity::getDead()
 {
+    moving = false;
     return isDead;
 }
 
 void MovingEntity::revertLastMove()
 {
+    // printf("Reverting last move\n");
     setPosition(getX() - prevX, getY() - prevY);
 }

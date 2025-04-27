@@ -52,13 +52,14 @@ Player::Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer) : M
 
 void Player::setDirection(directions _direction)
 {
+    // printf("%d\n", _direction);
     direction = _direction;
     setMoving(true);
     switch (_direction)
     {
     case directions::NONE:
         if (lastDirection != directions::NONE)
-            animation[lastDirection]->reset();
+            animation[lastDirection]->stop();
         else 
         {
             animation[directions::DOWN]->play();
@@ -67,12 +68,12 @@ void Player::setDirection(directions _direction)
         setMoving(false);
         break;
     default:
-        if (direction != lastDirection)
+        if (direction != lastDirection && lastDirection != directions::NONE)
         {
-            animation[direction]->reset();
-            lastDirection = direction;
+            animation[lastDirection]->reset();
         }
         animation[direction]->play();
+        lastDirection = direction;
         break;
     }
 }
@@ -87,33 +88,33 @@ bool Player::isMovingHorizontal()
 }
 
 void Player::update(const int delta)
-{
+{   
     if (isMoving())
     {
         const int moveDistance = speed * delta * getWidth();
+        prevX = moveDistance * (isMovingHorizontal() ? (direction == directions::LEFT ? -1 : 1) : 0);
+        prevY = moveDistance * (isMovingVertical() ? (direction == directions::UP ? -1 : 1) : 0);
         if (isMovingVertical())
         {
+            printf("moving vertical\n");
             if (direction == directions::UP)
             {
-                // printf("moving up\n");
                 setPosition(getX(), getY() - moveDistance);
             }
             else
             {
-                // printf("moving down\n");
                 setPosition(getX(), getY() + moveDistance);
             }
         }
         else
         {
+            printf("moving horizontal\n");
             if (direction == directions::LEFT)
             {
-                // printf("moving left\n");
                 setPosition(getX() - moveDistance, getY());
             }
             else
             {
-                // printf("moving right\n");
                 setPosition(getX() + moveDistance, getY());
             }
         }

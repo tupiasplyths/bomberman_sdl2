@@ -14,8 +14,8 @@ public:
     void revertLastMove();
 
 protected:
-    int prevX = 0;
-    int prevY = 0;
+    int prevX = 0; // X diff after moving
+    int prevY = 0; // Y diff after moving
     bool isDead = false;
 private:
     bool moving = false;

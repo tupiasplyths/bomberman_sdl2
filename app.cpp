@@ -37,6 +37,7 @@ App::App()
         std::cout << SDL_GetError() << std::endl;
         return;
     }
+    SDL_SetWindowBordered(main_window, SDL_TRUE);
 
     renderer = SDL_CreateRenderer(main_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) 
@@ -63,10 +64,12 @@ App::~App()
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(main_window);
     delete texture;
+    current_scene = nullptr;
+    scenes_list.clear();
     
     TTF_Quit();
-    SDL_Quit();
     IMG_Quit();
+    SDL_Quit();
 }
 
 void App::addScene(std::string name, std::shared_ptr<Scene> scene)

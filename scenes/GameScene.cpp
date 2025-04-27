@@ -18,37 +18,15 @@
 
 GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
 {
+    app->addScene("gameover", std::make_shared<GameOverScene>(app, "gameover"));
     auto text = std::make_shared<Text>(app->getTextures()->getFont(), "GameScene", app->getRenderer());
     text->setSize(app->getWindowWidth() / 16, app->getWindowHeight() / 80);
     text->setPosition(0, app->getWindowHeight() - text->getHeight());
     addObject(text);
 
-    app->addScene("gameover", std::make_shared<GameOverScene>(app, "gameover"));
-    // std::shared_ptr<SDL_Texture> tmp = app->getTextures()->getTexture(Texture::texture_name::WALL);
-    // std::cout << tmp << std::endl;
-    // std::shared_ptr<Sprite> wall1 = std::make_shared<Sprite>(tmp, app->getRenderer());
-    // wall1->setSize(32, 32);
-    // std::cout << wall1->hasTexture() << std::endl;
-    // wall1->setPosition(256, 256);
-    // wall1->draw();
-    // addObject(wall1);
     generateMap();
     spawnPlayer();
     generateEnemies();
-}
-
-void GameScene::spawnPlayer()
-{
-    std::cout << "Player spawned" << std::endl;
-    player = std::make_unique<Player>
-    (
-        app->getTextures()->getTexture(Texture::texture_name::PLAYER),
-        app->getRenderer()
-    );
-    player->setPosition(playerStartPosX, playerStartPosY);
-    player->setSize(32, 48);
-    player->setClip(32, 48, 0, 48);
-    addObject(player);
 }
 
 void GameScene::update(const int delta)
@@ -61,8 +39,30 @@ void GameScene::update(const int delta)
     if (player->getDead())
     {
         app->activateScene("gameover");
-        // app->activateScene("menu");
         app->removeScene("game");
+    }
+}
+
+void GameScene::onEvent(const SDL_Event &event)
+{
+    Scene::onEvent(event);
+
+    if (event.type == SDL_KEYDOWN)
+    {
+        switch (event.key.keysym.scancode)
+        {
+        case SDL_SCANCODE_ESCAPE:
+            exit();
+            break;
+        case SDL_SCANCODE_BACKSLASH:
+            // debug();
+            break;
+        }
+    }
+
+    if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.repeat == 0)
+    {
+        updateMovement(event.type == SDL_KEYDOWN ? true : false, event.key.keysym.scancode);
     }
 }
 
@@ -90,6 +90,63 @@ void GameScene::updateBombTimer(const int delta)
         spawnExplosion(bomb.get());
         removeObject(bomb);
         bomb = nullptr;
+    }
+}
+
+void GameScene::updateMovement(const bool keyPressed, const int keycode)
+{
+    if (player == nullptr)
+        return;
+
+    // for (auto &enemy : enemies)
+    // {
+    //     if (checkCollision(player->getRect(), enemy->getRect()))
+    //     {
+    //         std::cout << "Player hit by enemy" << std::endl;
+    //         player->setDead();
+    //         player->setDirection(Player::directions::NONE);
+    //         return;
+    //     }
+    // }
+
+    if (keyPressed)
+    {
+        switch (keycode)
+        {
+        case SDL_SCANCODE_W:
+            if (player->getDead())
+                break;
+            player->setDirection(Player::directions::UP);
+            break;
+        case SDL_SCANCODE_A:
+            if (player->getDead())
+                break;
+            player->setDirection(Player::directions::LEFT);
+            break;
+        case SDL_SCANCODE_S:
+            if (player->getDead())
+                break;
+            player->setDirection(Player::directions::DOWN);
+            break;
+        case SDL_SCANCODE_D:
+            if (player->getDead())
+                break;
+            player->setDirection(Player::directions::RIGHT);
+            break;
+        case SDL_SCANCODE_SPACE:
+            if (player->getDead())
+                return;
+            spawnBomb(player.get());
+            break;
+
+        default:
+            break;
+        }
+    }
+    else
+    {
+        std::cout << "stopped" << std::endl;
+        player->setDirection(Player::directions::NONE);
     }
 }
 
@@ -126,8 +183,11 @@ void GameScene::updatePlayerCollision()
         return;
     }
     SDL_Rect playerRect = player->getRect();
-    playerRect.w = static_cast<int>(playerRect.w * 0.5);
-    playerRect.h = static_cast<int>(playerRect.h * 0.5);
+    playerRect.w = static_cast<int>(playerRect.w * 0.7);
+    playerRect.h = static_cast<int>(playerRect.h * 0.7);
+    // Move hitbox to bottom of player
+    playerRect.y += playerRect.h / 2;
+    playerRect.x += playerRect.w / 2;
     for (const auto &collisionObject : collisions)
     {
         if (checkCollision(playerRect, collisionObject.second->getRect()))
@@ -174,34 +234,19 @@ void GameScene::updateEnemiesCollision()
         // check for player collision
         if (player != nullptr)
         {
-            // set width to smaller size
+            // smaller hit box for player
             SDL_Rect playerRect = player->getRect();
             playerRect.w = static_cast<int>(playerRect.w * 0.2);
             playerRect.h = static_cast<int>(playerRect.h * 0.2);
             if (checkCollision(playerRect, enemy->getRect()))
             {
                 // player killed by enemy
+                std::cout << "Player killed by enemy" << std::endl;
                 removeObject(player);
                 player = nullptr;
                 exit();
             }
         }
-        // if (player != nullptr)
-        // {
-        //     // can attack?
-        //     if (!enemy->isMovingToCell() && enemy->canAttack())
-        //     {
-        //         // check for attack radius
-        //         if (abs(player->getPositionX() + player->getWidth() / 2 - enemy->getPositionX() -
-        //                 enemy->getWidth() / 2) < enemy->getAttackRadius() &&
-        //             abs(player->getPositionY() + player->getHeight() / 2 - enemy->getPositionY() -
-        //                 enemy->getHeight() / 2) < enemy->getAttackRadius())
-        //         {
-        //             // start follow to player
-        //             followToPlayer(enemy.get());
-        //         }
-        //     }
-        // }
     }
 }
 
@@ -237,7 +282,9 @@ void GameScene::updateExplosionsCollision()
             if (checkCollision(enemyRect, explosion->getRect()))
             {
                 removeObject(*itEnemies);
+                (*itEnemies)->setDead();
                 itEnemies = enemies.erase(itEnemies);
+                std::cout << "Enemy exploded" << std::endl;
                 continue;
             }
             ++itEnemies;
@@ -250,19 +297,33 @@ void GameScene::updateExplosionsCollision()
             playerRect.h = static_cast<int>(playerRect.h * 0.2f);
             if (checkCollision(playerRect, explosion->getRect()))
             {
+                std::cout << "Player exploded" << std::endl;
                 player->setDead();
                 removeObject(player);
                 player = nullptr;
-                // exit();
+                exit();
             }
         }
     }
 }
 
+void GameScene::spawnPlayer()
+{
+    std::cout << "Player spawned" << std::endl;
+    player = std::make_unique<Player>(
+        app->getTextures()->getTexture(Texture::texture_name::PLAYER),
+        app->getRenderer());
+
+    player->setPosition(playerStartPosX, playerStartPosY);
+    player->setSize(32, 32);
+    player->setClip(32, 48, 0, 48);
+    addObject(player);
+}
+
 void GameScene::spawnWall(const int posX, const int posY)
 {
     auto wall = std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::WALL), app->getRenderer());
-    if (!wall->hasTexture()) 
+    if (!wall->hasTexture())
     {
         printf("Err: texture is null\n");
     }
@@ -271,6 +332,7 @@ void GameScene::spawnWall(const int posX, const int posY)
     wall->setClip(32, 32, 0, 0);
     addObject(wall);
     backgroundCount++;
+    collisions.push_back(std::make_pair(Tile::Wall, wall));
 }
 
 void GameScene::spawnBrick(const int posX, const int posY)
@@ -280,6 +342,7 @@ void GameScene::spawnBrick(const int posX, const int posY)
     brick->setSize(32, 32);
     brick->setClip(32, 32, 0, 0);
     addObject(brick);
+    collisions.push_back(std::make_pair(Tile::Brick, brick));
 }
 
 void GameScene::spawnBalloom(const int posX, const int posY)
@@ -292,6 +355,25 @@ void GameScene::spawnBalloom(const int posX, const int posY)
     enemies.push_back(balloom);
     std::cout << "Balloom spawned" << std::endl;
     std::cout << "Enemies count: " << enemies.size() << std::endl;
+}
+
+void GameScene::spawnPortal(Object *object)
+{
+    portal =
+        std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::PORTAL), app->getRenderer());
+    portal->setSize(32, 32);
+    portal->setPosition(object->getX(), object->getY());
+    insertObject(portal, backgroundCount);
+}
+
+void GameScene::spawnGrass(const int posX, const int posY)
+{
+    auto grass = std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::GRASS), app->getRenderer());
+    grass->setPosition(posX, posY);
+    grass->setSize(32, 32);
+    grass->setClip(32, 32, 0, 0);
+    addObject(grass);
+    backgroundCount++;
 }
 
 void GameScene::spawnBomb(Object *object)
@@ -308,14 +390,14 @@ void GameScene::spawnBomb(Object *object)
     const int bombDiffX = bombX % 32;
     const int bombDiffY = bombY % 32;
 
-    bombX = bombDiffX > 16? bombX + 32 - bombDiffX : bombX - bombDiffX;
-    bombY = bombDiffY > 16? bombY + 32 - bombDiffY : bombY - bombDiffY;
+    bombX = bombDiffX > 16 ? bombX + 32 - bombDiffX : bombX - bombDiffX;
+    bombY = bombDiffY > 16 ? bombY + 32 - bombDiffY : bombY - bombDiffY;
 
     bomb = std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::BOMB), app->getRenderer());
     bomb->setPosition(bombX, bombY);
     bomb->setSize(32, 32);
     insertObject(bomb, backgroundCount);
-    
+
     auto animation = std::make_shared<Animation>();
     animation->addAnimationObject(AnimationObject(0, 0, 32, 32));
     animation->addAnimationObject(AnimationObject(32, 0, 32, 32));
@@ -328,87 +410,11 @@ void GameScene::spawnBomb(Object *object)
     const int bombCellX = static_cast<int>(
         round(bomb->getX() / static_cast<float>(32)));
     const int bombCellY = static_cast<int>(
-        round(bomb->getY()  / static_cast<float>(32)));
+        round(bomb->getY() / static_cast<float>(32)));
     gameMap[bombCellY][bombCellX] = Tile::Bomb;
 
     bombTimer = 1500;
     animation->play();
-}
-
-void GameScene::onEvent(const SDL_Event &event)
-{
-    Scene::onEvent(event);
-    
-    if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.repeat == 0)
-    {
-        updateMovement(event.type == SDL_KEYDOWN? true : false, event.key.keysym.scancode);
-    }
-}
-
-void GameScene::exit()
-{
-    app->activateScene("menu");
-    app->removeScene("game");
-    std::cout << "Game scene exited" << std::endl;
-}
-
-void GameScene::updateMovement(const bool keyPressed, const int keycode)
-{
-    if (player == nullptr) return;
-    
-    for (auto &enemy : enemies)
-    {
-        if (checkCollision(player->getRect(), enemy->getRect()))
-        {
-            std::cout << "Player hit by enemy" << std::endl; 
-            player->setDead();
-            player->setDirection(Player::directions::NONE);
-            return;
-        }
-    }
-
-    if (keyPressed)
-    {
-        switch (keycode)
-        {
-            case SDL_SCANCODE_W:
-                if (player->getDead()) break;
-                player->setDirection(Player::directions::UP);
-                // std::cout << "move up" << std::endl;
-                break;
-            case SDL_SCANCODE_A:
-                if (player->getDead())
-                    break;
-                player->setDirection(Player::directions::LEFT);
-                break;
-            case SDL_SCANCODE_S:
-                if (player->getDead())
-                    break;
-                player->setDirection(Player::directions::DOWN);
-                break;
-            case SDL_SCANCODE_D:
-                if (player->getDead())
-                    break;
-                player->setDirection(Player::directions::RIGHT);
-                break;
-            case SDL_SCANCODE_SPACE:
-                if (player->getDead()) return;
-                spawnBomb(player.get());
-                break;
-            case SDL_SCANCODE_ESCAPE:
-                exit();
-                break;
-            case SDL_SCANCODE_BACKSLASH:
-                // debug();
-                break;
-            default:
-                break;
-        }
-    }
-    else 
-    {
-        player->setDirection(Player::directions::NONE);
-    }
 }
 
 void GameScene::spawnExplosion(Object *object)
@@ -446,30 +452,10 @@ void GameScene::spawnExplosion(Object *object)
     explosionTimer = 800;
 }
 
-
 // void GameScene::debug()
 // {
 //     std::cout << player->getX() << " " << player->getY() << std::endl;
 // }
-
-void GameScene::spawnGrass(const int posX, const int posY)
-{
-    auto grass = std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::GRASS), app->getRenderer());
-    grass->setPosition(posX, posY);
-    grass->setSize(32, 32);
-    grass->setClip(32, 32, 0, 0);
-    addObject(grass);
-    backgroundCount++;
-}
-
-void GameScene::spawnPortal(Object *object)
-{
-    portal =
-        std::make_shared<Sprite>(app->getTextures()->getTexture(Texture::texture_name::PORTAL), app->getRenderer());
-    portal->setSize(32, 32);
-    portal->setPosition(object->getX(), object->getY());
-    insertObject(portal, backgroundCount);
-}
 
 void GameScene::generateMap()
 {
@@ -525,11 +511,6 @@ void GameScene::generateMap()
     file.close();
 }
 
-bool GameScene::checkCollision(const SDL_Rect &rect1, const SDL_Rect &rect2) const
-{
-    return SDL_HasIntersection(&rect1, &rect2);
-}
-
 void GameScene::generateEnemies()
 {
     // we need enemy in random tile
@@ -545,7 +526,7 @@ void GameScene::generateEnemies()
     // start enemies spawn
     for (int i = 0; i < randCount(); i++)
     {
-        // try to find suitable tile
+        // loop random x, y until Tile is not Brick, Wall or EmptyGrass
         int cellX = randCellX();
         int cellY = randCellY();
         while (gameMap[cellX][cellY] == Tile::Brick || gameMap[cellX][cellY] == Tile::Wall ||
@@ -561,7 +542,8 @@ void GameScene::generateEnemies()
 
 void GameScene::destroyBrick(std::shared_ptr<Object> brick)
 {
-    // we need door if don't have
+    std::cout << "Brick destroyed" << std::endl;
+    // spawn door if not exist
     if (portal == nullptr)
     {
         // left bricks count
@@ -570,7 +552,7 @@ void GameScene::destroyBrick(std::shared_ptr<Object> brick)
                                          { return collision.first == Tile::Brick; });
         // random for door spawn
         const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-        auto randDoor = std::bind(std::uniform_int_distribution<int>(0, 10),
+        auto randDoor = std::bind(std::uniform_int_distribution<int>(0, 6),
                                   std::mt19937(static_cast<unsigned int>(seed)));
         // spawn door if we can
         if (randDoor() == 0 || bricksCount <= 1)
@@ -585,4 +567,17 @@ void GameScene::destroyBrick(std::shared_ptr<Object> brick)
         round(brick->getY() / static_cast<float>(32)));
     gameMap[brickCellY][brickCellX] = Tile::Grass;
     removeObject(brick);
+}
+
+bool GameScene::checkCollision(const SDL_Rect &rect1, const SDL_Rect &rect2) const
+{
+    return SDL_HasIntersection(&rect1, &rect2);
+}
+
+void GameScene::exit()
+{
+    // app->activateScene("menu");
+    app->activateScene("gameover");
+    app->removeScene("game");
+    std::cout << "Game scene exited" << std::endl;
 }

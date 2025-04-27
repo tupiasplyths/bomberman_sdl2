@@ -222,30 +222,6 @@ app.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/app.cpp.s
 .PHONY : app.cpp.s
 
-entities/Creature.o: entities/Creature.cpp.o
-.PHONY : entities/Creature.o
-
-# target to build an object file
-entities/Creature.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Creature.cpp.o
-.PHONY : entities/Creature.cpp.o
-
-entities/Creature.i: entities/Creature.cpp.i
-.PHONY : entities/Creature.i
-
-# target to preprocess a source file
-entities/Creature.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Creature.cpp.i
-.PHONY : entities/Creature.cpp.i
-
-entities/Creature.s: entities/Creature.cpp.s
-.PHONY : entities/Creature.s
-
-# target to generate assembly for a file
-entities/Creature.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Creature.cpp.s
-.PHONY : entities/Creature.cpp.s
-
 entities/Enemy.o: entities/Enemy.cpp.o
 .PHONY : entities/Enemy.o
 
@@ -270,6 +246,30 @@ entities/Enemy.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Enemy.cpp.s
 .PHONY : entities/Enemy.cpp.s
 
+entities/MovingEntities.o: entities/MovingEntities.cpp.o
+.PHONY : entities/MovingEntities.o
+
+# target to build an object file
+entities/MovingEntities.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/MovingEntities.cpp.o
+.PHONY : entities/MovingEntities.cpp.o
+
+entities/MovingEntities.i: entities/MovingEntities.cpp.i
+.PHONY : entities/MovingEntities.i
+
+# target to preprocess a source file
+entities/MovingEntities.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/MovingEntities.cpp.i
+.PHONY : entities/MovingEntities.cpp.i
+
+entities/MovingEntities.s: entities/MovingEntities.cpp.s
+.PHONY : entities/MovingEntities.s
+
+# target to generate assembly for a file
+entities/MovingEntities.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/MovingEntities.cpp.s
+.PHONY : entities/MovingEntities.cpp.s
+
 entities/Object.o: entities/Object.cpp.o
 .PHONY : entities/Object.o
 
@@ -293,6 +293,30 @@ entities/Object.s: entities/Object.cpp.s
 entities/Object.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Object.cpp.s
 .PHONY : entities/Object.cpp.s
+
+entities/Player.o: entities/Player.cpp.o
+.PHONY : entities/Player.o
+
+# target to build an object file
+entities/Player.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Player.cpp.o
+.PHONY : entities/Player.cpp.o
+
+entities/Player.i: entities/Player.cpp.i
+.PHONY : entities/Player.i
+
+# target to preprocess a source file
+entities/Player.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Player.cpp.i
+.PHONY : entities/Player.cpp.i
+
+entities/Player.s: entities/Player.cpp.s
+.PHONY : entities/Player.s
+
+# target to generate assembly for a file
+entities/Player.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/entities/Player.cpp.s
+.PHONY : entities/Player.cpp.s
 
 entities/Sprite.o: entities/Sprite.cpp.o
 .PHONY : entities/Sprite.o
@@ -365,6 +389,54 @@ game.s: game.cpp.s
 game.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/game.cpp.s
 .PHONY : game.cpp.s
+
+scenes/GameOverScene.o: scenes/GameOverScene.cpp.o
+.PHONY : scenes/GameOverScene.o
+
+# target to build an object file
+scenes/GameOverScene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/GameOverScene.cpp.o
+.PHONY : scenes/GameOverScene.cpp.o
+
+scenes/GameOverScene.i: scenes/GameOverScene.cpp.i
+.PHONY : scenes/GameOverScene.i
+
+# target to preprocess a source file
+scenes/GameOverScene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/GameOverScene.cpp.i
+.PHONY : scenes/GameOverScene.cpp.i
+
+scenes/GameOverScene.s: scenes/GameOverScene.cpp.s
+.PHONY : scenes/GameOverScene.s
+
+# target to generate assembly for a file
+scenes/GameOverScene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/GameOverScene.cpp.s
+.PHONY : scenes/GameOverScene.cpp.s
+
+scenes/GameScene.o: scenes/GameScene.cpp.o
+.PHONY : scenes/GameScene.o
+
+# target to build an object file
+scenes/GameScene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/GameScene.cpp.o
+.PHONY : scenes/GameScene.cpp.o
+
+scenes/GameScene.i: scenes/GameScene.cpp.i
+.PHONY : scenes/GameScene.i
+
+# target to preprocess a source file
+scenes/GameScene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/GameScene.cpp.i
+.PHONY : scenes/GameScene.cpp.i
+
+scenes/GameScene.s: scenes/GameScene.cpp.s
+.PHONY : scenes/GameScene.s
+
+# target to generate assembly for a file
+scenes/GameScene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/GameScene.cpp.s
+.PHONY : scenes/GameScene.cpp.s
 
 scenes/MenuScene.o: scenes/MenuScene.cpp.o
 .PHONY : scenes/MenuScene.o
@@ -457,15 +529,18 @@ help:
 	@echo "... app.o"
 	@echo "... app.i"
 	@echo "... app.s"
-	@echo "... entities/Creature.o"
-	@echo "... entities/Creature.i"
-	@echo "... entities/Creature.s"
 	@echo "... entities/Enemy.o"
 	@echo "... entities/Enemy.i"
 	@echo "... entities/Enemy.s"
+	@echo "... entities/MovingEntities.o"
+	@echo "... entities/MovingEntities.i"
+	@echo "... entities/MovingEntities.s"
 	@echo "... entities/Object.o"
 	@echo "... entities/Object.i"
 	@echo "... entities/Object.s"
+	@echo "... entities/Player.o"
+	@echo "... entities/Player.i"
+	@echo "... entities/Player.s"
 	@echo "... entities/Sprite.o"
 	@echo "... entities/Sprite.i"
 	@echo "... entities/Sprite.s"
@@ -475,6 +550,12 @@ help:
 	@echo "... game.o"
 	@echo "... game.i"
 	@echo "... game.s"
+	@echo "... scenes/GameOverScene.o"
+	@echo "... scenes/GameOverScene.i"
+	@echo "... scenes/GameOverScene.s"
+	@echo "... scenes/GameScene.o"
+	@echo "... scenes/GameScene.i"
+	@echo "... scenes/GameScene.s"
 	@echo "... scenes/MenuScene.o"
 	@echo "... scenes/MenuScene.i"
 	@echo "... scenes/MenuScene.s"

@@ -11,6 +11,7 @@ bool MovingEntity::isMoving() const
 
 void MovingEntity::setDead()
 {
+    moving = false;
     isDead = true;
 }
 
@@ -21,5 +22,6 @@ bool MovingEntity::getDead()
 
 void MovingEntity::revertLastMove()
 {
+    // printf("Reverting last move\n");
     setPosition(getX() - prevX, getY() - prevY);
 }

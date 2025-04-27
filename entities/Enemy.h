@@ -10,10 +10,10 @@ public:
     void moveTo(const int x, const int y);
     void moveToCell(std::pair<int, int> pathToCell);
     bool isMovingToCell() const;
-    // bool canAttack() const;
-    int getAttackRadius() const;
     virtual void update(const int delta) override;
     void generateNewPath();
+    int newX = 0; // position X to move
+    int newY = 0; // position Y to move
 
 private:
     /**
@@ -22,19 +22,16 @@ private:
      * @param delta - time in milliseconds
      */
     void updateMovement(const int delta);
-
     // movement
-    int newX = 0;      // position X to move
-    int newY = 0;      // position Y to move
-    bool movingToCell = false; // is moving to cell
-    std::pair<int, int> path;  // diff of cells to move
-    // consts
-    const float baseSpeed = 0.002f;   // speed of enemy
-    // const float attackSpeed = 0.0025f; // speed of attack enemy
-    // const int attackRadius = 4;        // attack radius (in cells)
+
+    bool movingToCell = false;       // is moving to cell
+    std::pair<int, int> path;        // diff of cells to move
+    const float baseSpeed = 0.0023f; // speed of enemy
+    const float attackSpeed = 0.0025f;
     std::shared_ptr<Animation> movement; // movement animation
     std::shared_ptr<Animation> death;
+    int deathAnimationTimer = 0;
+    unsigned int getSeed();
 };
-
 
 #endif // ENEMY_H

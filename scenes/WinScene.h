@@ -1,5 +1,5 @@
-#ifndef GAMEOVERSCENE_H
-#define GAMEOVERSCENE_H
+#ifndef WINSCENE_H
+#define WINSCENE_H
 
 #include <SDL2/SDL.h>
 #include <memory>
@@ -7,12 +7,10 @@
 #include "scenes/Scene.h"
 #include "entities/Text.h"
 
-class GameOverScene : public Scene
+class WinScene : public Scene
 {
 public:
-    GameOverScene(App *_app, std::string name);
-    // void onEvent(const SDL_Event &event);
-    // void onActivate();
+    WinScene(App *_app, std::string name);
     virtual void update(const int delta);
 
 private:
@@ -22,4 +20,4 @@ private:
     const SDL_Color default_color = {255, 255, 255, 255};
 };
 
-#endif // GAMEOVERSCENE_H
+#endif // WINSCENE_H

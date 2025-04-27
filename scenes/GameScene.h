@@ -5,6 +5,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
+#include <chrono>
 
 #include "entities/Text.h"
 #include "scenes/Scene.h"
@@ -29,6 +30,12 @@ public:
     virtual void update(const int delta) override;
     virtual void onEvent(const SDL_Event &event);
     bool checkCollision(const SDL_Rect &rect1, const SDL_Rect &rect2) const;
+    template <typename Enumeration>
+    auto as_integer(Enumeration const value)
+        -> typename std::underlying_type<Enumeration>::type
+    {
+        return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+    }
 
 private:
     Tile gameMap[16][16];
@@ -50,7 +57,9 @@ private:
     void updateEnemiesCollision();
     void updateExplosionsCollision();
     void destroyBrick(std::shared_ptr<Object> object);
-    // void debug();
+    void updatePlayerDeath(const int delta);
+    unsigned int getSeed();
+    void debug();
     int playerStartPosX = 0;
     int playerStartPosY = 0;
     std::vector<std::shared_ptr<Enemy>> enemies;
@@ -63,6 +72,7 @@ private:
     int backgroundCount = 0;
     int bombTimer = 0;
     int explosionTimer = 0;
+    int playerDeathTimer = 750;
 };
 
 #endif // GAMESCENE_H

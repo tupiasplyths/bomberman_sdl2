@@ -34,10 +34,6 @@ private:
     bool isMovingVertical();
     bool isMovingHorizontal();
     const float speed = 0.005f;
-    std::shared_ptr<Animation> upAnimation;
-    std::shared_ptr<Animation> downAnimation;
-    std::shared_ptr<Animation> leftAnimation;
-    std::shared_ptr<Animation> rightAnimation;
     std::shared_ptr<Animation> deathAnimation;
     std::unordered_map<directions, std::shared_ptr<Animation>, EnumClassHash> animation;
     std::shared_ptr<Animation> animations;

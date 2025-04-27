@@ -26,7 +26,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 # find_library(SDL2_TTF_LIBRARY NAME SDL2_ttf)
 # find_library(SDL2_IMAGE_LIBRARY NAME SDL2_image)
-# -Wnon-virtual-dtor -Wpedantic -pedantic-errors -Wshadow -Wextra  -Wunused -Wconversion -Wall 
+# -Wnon-virtual-dtor -Wpedantic -pedantic-errors -Wshadow -Wextra  -Wunused -Wconversion -Wall
 if(MSVC)
     add_compile_options(/std:c++17 /W4 /MT )
 else()
@@ -49,6 +49,7 @@ set (
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/MenuScene.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/GameScene.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scenes/GameOverScene.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/scenes/WinScene.cpp
 )
 
 add_executable(bomberman ${SOURCES})
@@ -60,15 +61,17 @@ add_executable(bomberman ${SOURCES})
 #     ${SDL2_IMAGE_LIBRARY}
 # )
 
+# for windows
 target_link_libraries(
-    bomberman 
-    SDL2::SDL2main 
-    SDL2::SDL2
-    SDL2_ttf::SDL2_ttf
-    SDL2_image::SDL2_image
-    -static
+   bomberman
+   SDL2::SDL2main
+   SDL2::SDL2
+   SDL2_ttf::SDL2_ttf
+   SDL2_image::SDL2_image
+   -static
 )
 
+# for linux
 # target_link_libraries(bomberman ${SDL2_LIBRARIES} -lSDL2_ttf -lSDL2_image)
 
 install(TARGETS bomberman

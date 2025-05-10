@@ -73,6 +73,7 @@ private:
     int bombTimer = 0;
     int explosionTimer = 0;
     int playerDeathTimer = 750;
+    bool pauseBombTimer = false;
 };
 
 #endif // GAMESCENE_H

@@ -33,7 +33,7 @@ private:
     directions lastDirection = directions::NONE;
     bool isMovingVertical();
     bool isMovingHorizontal();
-    const float speed = 0.005f;
+    const float speed = 0.007f;
     std::shared_ptr<Animation> deathAnimation;
     std::unordered_map<directions, std::shared_ptr<Animation>, EnumClassHash> animation;
     std::shared_ptr<Animation> animations;

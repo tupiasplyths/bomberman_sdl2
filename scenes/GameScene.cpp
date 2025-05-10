@@ -87,6 +87,10 @@ void GameScene::updateTimers(const int delta)
 
 void GameScene::updateBombTimer(const int delta)
 {
+    if (pauseBombTimer)
+    {
+        return;
+    }
     if (bombTimer > 0)
     {
         bombTimer -= delta;
@@ -133,6 +137,12 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
                 return;
             spawnBomb(player.get());
             break;  
+        case SDL_SCANCODE_O:
+            if (player->getDead())
+                return;
+            printf("Pause bomb timer\n");
+            pauseBombTimer = true;
+            break;
         default:
             break;
         }
@@ -140,6 +150,7 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
     else
     {
         player->setDirection(Player::directions::NONE);
+        pauseBombTimer = false;
     }
 }
 
@@ -272,7 +283,6 @@ void GameScene::updateEnemiesCollision()
 
 void GameScene::updateExplosionsCollision()
 {
-    // check for bang collision
     for (const auto &explosion : explosions)
     {
         // check bricks

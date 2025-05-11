@@ -129,3 +129,8 @@ void Player::update(const int delta)
     }
     MovingEntity::update(delta);
 }
+
+Player::directions Player::getLastDirection()
+{
+    return lastDirection;
+}

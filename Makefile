@@ -486,6 +486,30 @@ scenes/Scene.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/Scene.cpp.s
 .PHONY : scenes/Scene.cpp.s
 
+scenes/WinScene.o: scenes/WinScene.cpp.o
+.PHONY : scenes/WinScene.o
+
+# target to build an object file
+scenes/WinScene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/WinScene.cpp.o
+.PHONY : scenes/WinScene.cpp.o
+
+scenes/WinScene.i: scenes/WinScene.cpp.i
+.PHONY : scenes/WinScene.i
+
+# target to preprocess a source file
+scenes/WinScene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/WinScene.cpp.i
+.PHONY : scenes/WinScene.cpp.i
+
+scenes/WinScene.s: scenes/WinScene.cpp.s
+.PHONY : scenes/WinScene.s
+
+# target to generate assembly for a file
+scenes/WinScene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bomberman.dir/build.make CMakeFiles/bomberman.dir/scenes/WinScene.cpp.s
+.PHONY : scenes/WinScene.cpp.s
+
 scenes/textures.o: scenes/textures.cpp.o
 .PHONY : scenes/textures.o
 
@@ -562,6 +586,9 @@ help:
 	@echo "... scenes/Scene.o"
 	@echo "... scenes/Scene.i"
 	@echo "... scenes/Scene.s"
+	@echo "... scenes/WinScene.o"
+	@echo "... scenes/WinScene.i"
+	@echo "... scenes/WinScene.s"
 	@echo "... scenes/textures.o"
 	@echo "... scenes/textures.i"
 	@echo "... scenes/textures.s"

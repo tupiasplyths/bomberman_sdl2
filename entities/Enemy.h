@@ -8,7 +8,6 @@ class Enemy : public MovingEntity
 public:
     Enemy(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer);
     void moveTo(const int x, const int y);
-    void moveToCell(std::pair<int, int> pathToCell);
     bool isMovingToCell() const;
     virtual void update(const int delta) override;
     void generateNewPath();

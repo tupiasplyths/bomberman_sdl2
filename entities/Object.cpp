@@ -88,6 +88,5 @@ void Object::draw()
     if (renderer != nullptr && texture != nullptr)
     {
         SDL_RenderCopyEx(renderer, texture.get(), &clip, &rect, 0, nullptr, flip);
-        // printf("draw at %d %d\n", rect.x, rect.y);
     }
 }

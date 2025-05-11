@@ -24,3 +24,6 @@ The portal is hidden among the bricks, destroy them to find it.
 ## How to build:
 - Open terminal in project folder
 - run `cmake .` then `cmake --build . --config Debug --target bomberman`
+
+## Reference:
+- [i-bardinov/bomberman-sdl2](https://github.com/i-bardinov/bomberman-sdl2)

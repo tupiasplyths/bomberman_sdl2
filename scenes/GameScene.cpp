@@ -38,6 +38,7 @@ void GameScene::update(const int delta)
     updatePlayerCollision();
     updateEnemiesCollision();
     updateExplosionsCollision();
+    updateBombMovement(delta);
 }
 
 void GameScene::onEvent(const SDL_Event &event)
@@ -88,7 +89,7 @@ void GameScene::updateTimers(const int delta)
 
 void GameScene::updateBombTimer(const int delta)
 {
-    if (pauseBombTimer)
+    if (pauseBombTimer || bombMoving)
     {
         return;
     }
@@ -168,21 +169,32 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
             player->setDirection(Player::directions::NONE);
             break;
         }
-        
     }
-    // else
-    // {
-    // }
 }
 
-void GameScene::updateBombMovement(float speed, Player::directions dir)
+void GameScene::updateBombMovement(int delta)
 {
-    if (!bomb)
+    if (!bomb || !bombMoving)
     {
         return;
     }
 
+    const int diffX = bomb->getX() - bombDesX;
+    const int diffY = bomb->getY() - bombDesY;
+    const int signX = (diffX > 0) ? 1 : ((diffX < 0) ? -1 : 0);
+    const int signY = (diffY > 0) ? 1 : ((diffY < 0) ? -1 : 0);
 
+    int distance = floor(bombSpeed * delta * 32);
+    if (abs(diffX) <= distance && abs(diffY) <= distance)
+    {
+        bomb->setPosition(bombDesX, bombDesY);
+        bombMoving = false;
+        return;
+    }
+    int newX = bomb->getX() - int(floor(distance) * signX);
+    int newY = bomb->getY() - int(floor(distance) * signY);
+    printf("bomb: %d, %d\n", newX, newY);
+    bomb->setPosition(newX, newY);
 }
 
 void GameScene::updateExplosionTimer(const int delta)
@@ -660,8 +672,6 @@ void GameScene::debug()
     }
 }
 
-
-
 void GameScene::KickBomb(int level)
 {
     if (player == nullptr || !bomb)
@@ -682,8 +692,38 @@ void GameScene::KickBomb(int level)
     }
 
     Player::directions dir = player->getLastDirection();
-    updateBombMovement(bombSpeed[level], dir);
-    // chargeTimer = 0;   
+    int distance = level * 32;
+    bombSpeed = bombSpeedArr[level-1];
+    moveBomb(dir, distance);
+    // chargeTimer = 0;
+}
+
+void GameScene::moveBomb(Player::directions dir, int distance)
+{
+    if (bomb == nullptr)
+    {
+        return;
+    }
+    bombMoving = true;
+    bombDesX = bomb->getX();
+    bombDesY = bomb->getY();
+    switch (dir)
+    {
+    case Player::UP:
+        bombDesY -= distance;
+        break;
+    case Player::DOWN:
+        bombDesY += distance;
+        break;
+    case Player::LEFT:
+        bombDesX -= distance;
+        break;
+    case Player::RIGHT:
+        bombDesX += distance;
+        break;
+    default:
+        break;
+    }
 }
 
 bool GameScene::isNextToBomb()

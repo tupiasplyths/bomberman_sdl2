@@ -41,16 +41,6 @@ void Enemy::moveTo(const int x, const int y)
     }
 }
 
-void Enemy::moveToCell(std::pair<int, int> pathToCell)
-{
-    // printf("Moving to cell %d, %d\n", pathToCell.first, pathToCell.second);
-    path = pathToCell;
-    movingToCell = true;
-
-    newX = getX() - ((getX() - newX) % getWidth());
-    newY = getY() - ((getY() - newY) % getHeight());
-}
-
 bool Enemy::isMovingToCell() const
 {
     return movingToCell;
@@ -71,7 +61,6 @@ void Enemy::updateMovement(const int delta)
     const int distance = floor(baseSpeed * delta * getWidth());
     prevX = distance * -signX;
     prevY = distance * -signY;
-    // printf("%d %d\n", signX, signY);
     if (abs(diffX) <= distance && abs(diffY) <= distance)
     {
         // printf("reached\n");
@@ -84,7 +73,6 @@ void Enemy::updateMovement(const int delta)
     int desX = getX() - int(floor(distance) * signX);
     int desY = getY() - int(floor(distance) * signY);
 
-    // printf("des:%d %d prev:%d %d\n", desX, desY, signX, signY);
     setPosition(desX, desY);
 }
 

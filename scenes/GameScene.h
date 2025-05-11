@@ -54,15 +54,16 @@ private:
     void updateExplosionTimer(const int delta);
     void updateChargeTimer(const int delta);
     void updateMovement(const bool keyPressed, const int keycode);
-    void updateBombMovement(float speed, Player::directions dir);
+    void updateBombMovement(int delta);
     void updatePlayerCollision();
     void updateEnemiesCollision();
     void updateExplosionsCollision();
     void destroyBrick(std::shared_ptr<Object> object);
     void updatePlayerDeath(const int delta);
     void KickBomb(int level);
+    void moveBomb(Player::directions dir, int distance);
     bool isNextToBomb();
-    float bombSpeed[6] = {0.005f, 0.006f, 0.008f, 0.009f, 0.01f, 0.014f};
+    float bombSpeedArr[6] = {0.005f, 0.006f, 0.008f, 0.009f, 0.01f, 0.014f}; // storing bomb speed levels
     unsigned int getSeed();
     void debug();
     int playerStartPosX = 0;
@@ -74,13 +75,17 @@ private:
     std::vector<std::shared_ptr<Object>> explosions;
     std::vector<std::pair<Tile, std::shared_ptr<Object>>> collisions;
     void exit();
-    int backgroundCount = 0;
+    int bombDesX = -1; // bomb X destination for kicking
+    int bombDesY = -1; // bomb Y destination for kicking
+    int backgroundCount = 0; // background count for inserting objects
     int chargeTimer = 0;
     int bombTimer = 0;
     int explosionTimer = 0;
     int playerDeathTimer = 750;
-    bool pauseBombTimer = false;
+    bool pauseBombTimer = false; // pause bomb timer when bomb is moving or player charging
     bool isCharging = false;
+    bool bombMoving = false;
+    float bombSpeed = 0; // bomb movement speed after kicked
 };
 
 #endif // GAMESCENE_H

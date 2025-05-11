@@ -14,7 +14,7 @@ The portal is hidden among the bricks, destroy them to find it.
 - app.cpp: Handle main game logic and loop, scenes, initialize SDL2 engine
 - Animation.cpp: Handle animation
 - scenes.cpp Class for scenes, manage and update objects 
-- GameScene.cpp: Class for game scene, handle game input, timers, update objects, create level.
+- GameScene.cpp: Logic for game scene, handle game input, timers, update objects, create level.
 - Object.cpp: Base class for all objects
 - Sprite.cpp: Storing animations and objects' position, textures
 - MovingEntities.cpp: Base class for moving objects, basic movement functions

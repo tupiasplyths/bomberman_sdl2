@@ -29,7 +29,6 @@ GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
     generateMap();
     spawnPlayer();
     generateEnemies();
-
 }
 
 void GameScene::update(const int delta)
@@ -39,13 +38,11 @@ void GameScene::update(const int delta)
     updatePlayerCollision();
     updateEnemiesCollision();
     updateExplosionsCollision();
-    
 }
 
 void GameScene::onEvent(const SDL_Event &event)
 {
     Scene::onEvent(event);
-
 
     if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.repeat == 0)
     {
@@ -80,8 +77,12 @@ void GameScene::updateTimers(const int delta)
 
     if (player->getDead() && explosionTimer < 200)
     {
-        // std::cout <<  "Player is dead" << std::endl;
         updatePlayerDeath(delta);
+    }
+
+    if (isCharging)
+    {
+        updateChargeTimer(delta);
     }
 }
 
@@ -103,44 +104,43 @@ void GameScene::updateBombTimer(const int delta)
     }
 }
 
+void GameScene::updateChargeTimer(const int delta)
+{
+    chargeTimer += delta;
+}
+
 void GameScene::updateMovement(const bool keyPressed, const int keycode)
 {
     if (player == nullptr)
         return;
 
+    if (player->getDead())
+        return;
     if (keyPressed)
     {
         switch (keycode)
         {
         case SDL_SCANCODE_W:
-            if (player->getDead())
-                break;
             player->setDirection(Player::directions::UP);
             break;
         case SDL_SCANCODE_A:
-            if (player->getDead())
-                break;
             player->setDirection(Player::directions::LEFT);
             break;
         case SDL_SCANCODE_S:
-            if (player->getDead())
-                break;
             player->setDirection(Player::directions::DOWN);
             break;
         case SDL_SCANCODE_D:
-            if (player->getDead())
-                break;
             player->setDirection(Player::directions::RIGHT);
             break;
         case SDL_SCANCODE_SPACE:
-            if (player->getDead())
-                return;
             spawnBomb(player.get());
-            break;  
+            break;
         case SDL_SCANCODE_O:
-            if (player->getDead())
-                return;
             printf("Pause bomb timer\n");
+            pauseBombTimer = true;
+            break;
+        case SDL_SCANCODE_J:
+            isCharging = true;
             pauseBombTimer = true;
             break;
         default:
@@ -149,12 +149,41 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
     }
     else
     {
-        player->setDirection(Player::directions::NONE);
-        pauseBombTimer = false;
+        switch (keycode)
+        {
+        case SDL_SCANCODE_J:
+        {
+            isCharging = false;
+            pauseBombTimer = false;
+            int level = chargeTimer / 500;
+            printf("Charging level: %d\n", level);
+            KickBomb(level);
+            chargeTimer = 0;
+            break;
+        }
+        case SDL_SCANCODE_O:
+            pauseBombTimer = false;
+            break;
+        default:
+            player->setDirection(Player::directions::NONE);
+            break;
+        }
+        
     }
+    // else
+    // {
+    // }
 }
 
+void GameScene::updateBombMovement(float speed, Player::directions dir)
+{
+    if (!bomb)
+    {
+        return;
+    }
 
+
+}
 
 void GameScene::updateExplosionTimer(const int delta)
 {
@@ -612,7 +641,6 @@ unsigned int GameScene::getSeed()
     return static_cast<unsigned int>(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 }
 
-
 void GameScene::exit()
 {
     // app->activateScene("menu");
@@ -632,3 +660,52 @@ void GameScene::debug()
     }
 }
 
+
+
+void GameScene::KickBomb(int level)
+{
+    if (player == nullptr || !bomb)
+    {
+        return;
+    }
+    if (!isNextToBomb())
+    {
+        return;
+    }
+    if (level > 6)
+    {
+        level = 6;
+    }
+    if (level == 0)
+    {
+        return;
+    }
+
+    Player::directions dir = player->getLastDirection();
+    updateBombMovement(bombSpeed[level], dir);
+    // chargeTimer = 0;   
+}
+
+bool GameScene::isNextToBomb()
+{
+    if (player == nullptr)
+    {
+        return false;
+    }
+
+    int playerX = player->getX();
+    int playerY = player->getY();
+    int bombX = bomb->getX();
+    int bombY = bomb->getY();
+
+    int distanceX = abs(playerX - bombX);
+    int distanceY = abs(playerY - bombY);
+
+    // Check if the player is adjacent to the bomb (up, down, left, or right)
+    if ((distanceX < 32) || distanceY < 32)
+    {
+        return true;
+    }
+
+    return false;
+}

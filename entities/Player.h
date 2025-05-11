@@ -27,6 +27,7 @@ public:
     Player(std::shared_ptr<SDL_Texture> texture, SDL_Renderer *renderer);
     void setDirection(directions direction);
     virtual void update(const int delta) override;
+    directions getLastDirection();
 
 private:
     directions direction = directions::NONE;

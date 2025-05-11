@@ -15,6 +15,7 @@
 #include "entities/Enemy.h"
 #include "scenes/GameOverScene.h"
 #include "scenes/WinScene.h"
+#include "entities/Text.h"
 #include "app.h"
 
 GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
@@ -22,13 +23,18 @@ GameScene::GameScene(App *_app, std::string name) : Scene(_app, name)
     app->addScene("gameover", std::make_shared<GameOverScene>(app, "gameover"));
     app->addScene("win", std::make_shared<WinScene>(app, "win"));
     auto text = std::make_shared<Text>(app->getTextures()->getFont(), "GameScene", app->getRenderer());
-    text->setSize(app->getWindowWidth() / 16, app->getWindowHeight() / 80);
+    text->setSize(app->getWindowWidth() / 10, app->getWindowHeight() / 50);
     text->setPosition(0, app->getWindowHeight() - text->getHeight());
-    addObject(text);
-
+    chargeBar = std:: make_shared<Text>(app->getTextures()->getFont(), "||||||", app->getRenderer());
+    
+    
     generateMap();
     spawnPlayer();
     generateEnemies();
+    addObject(text);
+    backgroundCount++;
+    // addObject(chargeBar);
+    // backgroundCount++;
 }
 
 void GameScene::update(const int delta)
@@ -39,6 +45,7 @@ void GameScene::update(const int delta)
     updateEnemiesCollision();
     updateExplosionsCollision();
     updateBombMovement(delta);
+    updateCharging();
 }
 
 void GameScene::onEvent(const SDL_Event &event)
@@ -110,6 +117,55 @@ void GameScene::updateChargeTimer(const int delta)
     chargeTimer += delta;
 }
 
+void GameScene::updateCharging()
+{
+    if (!isCharging)
+    {
+        // chargeBarWidth = 1;
+        // chargeBar->setText(" ");
+        removeObject(chargeBar);
+        return;
+    }
+
+    if (chargeTimer > 2100)
+    { // Max level (e.g., level 6: 6 * 350 = 2100)
+        // chargeBarWidth = 48;
+        chargeText = "||||||||||||";
+    }
+    else if (chargeTimer > 1750)
+    { // Level 5
+        // chargeBarWidth = 40;
+        chargeText = "||||||||||  ";
+    }
+    else if (chargeTimer > 1400)
+    { // Level 4
+        // chargeBarWidth = 32;
+        chargeText = "||||||||    ";
+    }
+    else if (chargeTimer > 1050)
+    { // Level 3
+        // chargeBarWidth = 24;
+        chargeText = "||||||      ";
+    }
+    else if (chargeTimer > 700)
+    { // Level 2
+        // chargeBarWidth = 16;
+        chargeText = "||||        ";
+    }
+    else if (chargeTimer > 350)
+    { // Level 1
+        // chargeBarWidth = 8;
+        chargeText = "||          ";
+    }
+    else
+    {
+        // chargeBarWidth = 1;
+        chargeText = " ";
+    }
+
+    chargeBar->setText(chargeText);
+}
+
 void GameScene::updateMovement(const bool keyPressed, const int keycode)
 {
     if (player == nullptr)
@@ -143,6 +199,7 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
         case SDL_SCANCODE_J:
             isCharging = true;
             pauseBombTimer = true;
+            spawnChargeBar();
             break;
         default:
             break;
@@ -156,10 +213,11 @@ void GameScene::updateMovement(const bool keyPressed, const int keycode)
         {
             isCharging = false;
             pauseBombTimer = false;
-            int level = chargeTimer / 500;
+            int level = chargeTimer / 350;
             printf("Charging level: %d\n", level);
             KickBomb(level);
             chargeTimer = 0;
+            removeObject(chargeBar);
             break;
         }
         case SDL_SCANCODE_O:
@@ -193,7 +251,6 @@ void GameScene::updateBombMovement(int delta)
     }
     int newX = bomb->getX() - int(floor(distance) * signX);
     int newY = bomb->getY() - int(floor(distance) * signY);
-    printf("bomb: %d, %d\n", newX, newY);
     bomb->setPosition(newX, newY);
 }
 
@@ -392,6 +449,17 @@ void GameScene::spawnPlayer()
     player->setSize(32, 32);
     player->setClip(32, 48, 0, 48);
     addObject(player);
+}
+
+void GameScene::spawnChargeBar()
+{
+    if (player && chargeBar)
+    {
+        chargeBar->setSize(36, 10); // Set the height of the chargeBar text
+        chargeBar->setPosition(player->getX() - 4, player->getY() - chargeBar->getHeight() - 5);
+    }
+    insertObject(chargeBar, backgroundCount);
+    // std::cout << "Charge bar spawned\n" << "Charge Text: " << chargeText << std::endl;
 }
 
 void GameScene::spawnWall(const int posX, const int posY)
@@ -742,7 +810,7 @@ bool GameScene::isNextToBomb()
     int distanceY = abs(playerY - bombY);
 
     // Check if the player is adjacent to the bomb (up, down, left, or right)
-    if ((distanceX < 32) || distanceY < 32)
+    if ((distanceX < 32) && distanceY < 32)
     {
         return true;
     }

@@ -40,6 +40,7 @@ public:
 private:
     Tile gameMap[16][16];
     void spawnPlayer();
+    void spawnChargeBar();
     void spawnWall(const int posX, const int posY);
     void spawnGrass(const int posX, const int posY);
     void spawnBrick(const int posX, const int posY);
@@ -55,6 +56,7 @@ private:
     void updateChargeTimer(const int delta);
     void updateMovement(const bool keyPressed, const int keycode);
     void updateBombMovement(int delta);
+    void updateCharging();
     void updatePlayerCollision();
     void updateEnemiesCollision();
     void updateExplosionsCollision();
@@ -63,7 +65,7 @@ private:
     void KickBomb(int level);
     void moveBomb(Player::directions dir, int distance);
     bool isNextToBomb();
-    float bombSpeedArr[6] = {0.005f, 0.006f, 0.008f, 0.009f, 0.01f, 0.014f}; // storing bomb speed levels
+    float bombSpeedArr[6] = {0.009f, 0.01f, 0.012f, 0.014f, 0.02f, 0.022f}; // storing bomb speed levels
     unsigned int getSeed();
     void debug();
     int playerStartPosX = 0;
@@ -86,6 +88,8 @@ private:
     bool isCharging = false;
     bool bombMoving = false;
     float bombSpeed = 0; // bomb movement speed after kicked
+    std::shared_ptr<Text> chargeBar;
+    std::string chargeText = " ";
 };
 
 #endif // GAMESCENE_H

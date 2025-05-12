@@ -3,7 +3,7 @@ Only one stage, classic bomberman.
 Defeat all enemies to win.
 The portal is hidden among the bricks, destroy them to find it.
 
-[Demo Video](https://youtu.be/xZEPqshVdbc)
+[Demo Video](https://youtu.be/v-nsGFxRoQI)
 ## Control:
 - W, A, S, D: Move
 - Space: Place bomb

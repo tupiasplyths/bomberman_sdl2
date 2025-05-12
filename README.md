@@ -7,6 +7,7 @@ The portal is hidden among the bricks, destroy them to find it.
 ## Control:
 - W, A, S, D: Move
 - Space: Place bomb
+- Hold J to kick the bomb 
 - Esc: Exit
 
 ## Program structure:
